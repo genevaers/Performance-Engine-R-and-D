@@ -1,7 +1,7 @@
         TITLE 'GVBXR7 - READ EXIT - QSAM I/O TP90'                              
 **********************************************************************          
 *                                                                               
-* (C) COPYRIGHT IBM CORPORATION 2006, 2017.                                     
+* (C) COPYRIGHT IBM CORPORATION 2023.                                     
 *     Copyright Contributors to the GenevaERS Project.                          
 * SPDX-License-Identifier: Apache-2.0                                           
 *                                                                               
@@ -24,7 +24,7 @@
 ***********************************************************************         
 *                                                                     *         
 *  MODULE DESCRIPTION     : THIS MODULE WORKS WITHIN THE "GENEVA"     *         
-*                           ENVIRONMENT.                              *         
+*                           ENVIRONMENT AND IS A READ EXIT.           *         
 *                                                                     *         
 *                         : THIS MODULE WILL READ RECORDS VIA QSAM    *         
 *                                                                     *         

@@ -28,14 +28,13 @@
       *  See the License for the specific language governing          *
       *  permissions and limitations under the License.               *
       *                                                               *
-      *                                                               *         
-      *                     G V B X R 8                               *         
+      *                     G V B X R 8                               *
       *                                                               *         
       *         GENEVA READ EXIT FOR CUSTNAME FILE                    *         
       *                                                               *         
       *  PURPOSE:   THIS PROGRAM IS A GENEVA READ EXIT.               *         
       *                                                               *         
-      *   INPUTS:   1. VSAM CUSTNAME FILE      (DDNAME=CUSTNAMV)      *         
+      *   INPUTS:   1. VSAM CUSTNAME FILE    DDNAME   (CUSTNAMV)      *         
       *                                                               *         
       *   OUTPUTS:  1. NONE                                           *         
       *                                                               *         
@@ -50,17 +49,16 @@
       *                                                               *         
       *   CALLED PROGRAMS:                                            *         
       *    GVBUR05  - GENEVA OBTAIN STORAGE IN MEMORY                 *         
-      *    GVBTP90  - FILE I-O PROCESSING                             *         
-      *    GVBUR66  - ENQ-DEQ PROCESSING                              *         
+      *    GVBTP90  - FILE I-O HANDLING                               *         
       *                                                               *         
       *****************************************************************         
-      *                                                                         
+                                                                                
        ENVIRONMENT DIVISION.                                                    
        CONFIGURATION SECTION.                                                   
        INPUT-OUTPUT SECTION.                                                    
        DATA DIVISION.                                                           
        WORKING-STORAGE SECTION.                                                 
-      *                                                                         
+                                                                                
        01  FILLER                       PIC X(40)  VALUE                        
            'WORKING STORAGE FOR GVBXR8 STARTS HERE'.                            
       *                                                                         

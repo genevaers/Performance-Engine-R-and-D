@@ -1,7 +1,7 @@
         TITLE 'GVBXR5 - READ EXIT - MERGE USER/GROUP PERMISSIONS'               
 **********************************************************************          
 *                                                                               
-* (C) COPYRIGHT IBM CORPORATION 2006, 2017.                                     
+* (C) COPYRIGHT IBM CORPORATION 2023.                                     
 *     Copyright Contributors to the GenevaERS Project.                          
 * SPDX-License-Identifier: Apache-2.0                                           
 *                                                                               
@@ -24,11 +24,16 @@
 ***********************************************************************         
 *                                                                     *         
 *  MODULE DESCRIPTION     : THIS MODULE WORKS WITHIN THE "GENEVA"     *         
-*                           ENVIRONMENT.                              *         
+*                           ENVIRONMENT AND IS A READ EXIT.           *         
 *                                                                     *         
-*                         : THIS MODULE COMBINES ACCESS FOR EACH      *         
-*                           INDIVIDUAL USER WITH THAT GIVEN TO USER   *         
-*                           VIA GROUP MEMBERSHIP.                     *         
+*                         : GVBXR1 GVBXR3 and GVBXR5 read RACF DSN    *
+*                           profiles via ICHEINTY. Geneva decides the *
+*                           dataset profiles it is interested in, by  *
+*                           using a VIEW containing lookup by USERID. *
+*                           A list of RACF GROUPS is built to cross   *
+*                           reference USERID with GROUP membership.   *
+*                           See VIEW Demo.Open.Source.Exit.Views.xml  *
+*                           APF authorization is required.            *
 *                                                                     *         
 ***********************************************************************         
                         EJECT                                                   

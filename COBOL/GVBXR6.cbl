@@ -2,7 +2,7 @@
            PROCESS NODYNAM                                                      
            PROCESS RMODE(AUTO)                                                  
        IDENTIFICATION DIVISION.                                                 
-       PROGRAM-ID.    GVBXR6.                                                   
+       PROGRAM-ID.    GVBXR6.
       *****************************************************************
       *                                                               *
       * (C) COPYRIGHT IBM CORPORATION 2023.                           *
@@ -29,12 +29,12 @@
       *  permissions and limitations under the License.               *
       *                                                               *
       *                     G V B X R 6                               *         
-      *                                                               *         
+      *                                                               *
       *         GENEVA READ EXIT FOR CUSTNAME FILE                    *         
       *                                                               *         
       *  PURPOSE:   THIS PROGRAM IS A GENEVA READ EXIT.               *         
       *                                                               *         
-      *   INPUTS:   1. QSAM CUSTNAME FILE      (DDNAME=CUSTNAMS)      *         
+      *   INPUTS:   1. QSAM CUSTNAME FILE    DDNAME   (CUSTNAMS)      *         
       *                                                               *         
       *   OUTPUTS:  1. NONE                                           *         
       *                                                               *         
@@ -49,11 +49,10 @@
       *                                                               *         
       *   CALLED PROGRAMS:                                            *         
       *    GVBUR05  - GENEVA OBTAIN STORAGE IN MEMORY                 *         
-      *    GVBTP90  - FILE I-O PROCESSING                             *         
-      *    GVBUR66  - ENQ-DEQ PROCESSING                              *         
+      *    GVBTP90  - FILE I-O HANDLING                               *         
       *                                                               *         
-      *****************************************************************         
-      *                                                                         
+      *****************************************************************
+                                                                                
        ENVIRONMENT DIVISION.                                                    
        CONFIGURATION SECTION.                                                   
        INPUT-OUTPUT SECTION.                                                    
