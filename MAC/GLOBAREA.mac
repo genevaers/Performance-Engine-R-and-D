@@ -1,0 +1,87 @@
+GLOBAREA DSECT
+*
+* (C) COPYRIGHT IBM CORPORATION 2008, 2020.
+*     Copyright Contributors to the GenevaERS Project.
+* SPDX-License-Identifier: Apache-2.0
+*
+**********************************************************************
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+*  or implied.
+*  See the License for the specific language governing permissions
+*  and limitations under the License.
+*
+GLOBPART DS    HL02               PARTITIONS in view
+GLOBDONE DS    HL02               PARTITIONS DONE
+*
+GLOBPARM DS    AL04               PARAMETER  TABLE    ADDRESS
+*
+GLOBRINB DS    AL04               RECORD INITIALIZATION TABLE - BEGIN
+GLOBRINM DS    AL04                                           - MAX
+GLOBRINE DS    AL04                                           - END
+*
+GLOBUR20 DS    AL04               "GVBUR20"  ADDRESS
+GLOBUR30 DS    AL04               "GVBUR30"  ADDRESS
+GLOBUR35 DS    AL04               "GVBUR35"  ADDRESS
+GLOBGENP DS    AL04               "GENPIPE"  ADDRESS              @017I
+*
+GLOBREAD DS    PL06               CUMULATIVE READ  COUNT
+GLOBBYTE DS    PL08               CUMULATIVE BYTE  COUNT
+GLOBDUPE DS    PL06               CUMULATIVE DUPE  COUNT
+GLOBFNDE DS    PL06               CUMULATIVE FOUND COUNT - EFFECTIVE DT
+GLOBFNDT DS    PL06               CUMULATIVE FOUND COUNT - TIMESTAMP
+GLOBFNDX DS    PL06               CUMULATIVE FOUND COUNT - EXACT  TSTMP
+GLOBFNDR DS    PL06               CUMULATIVE FOUND COUNT - REVERSE SCAN
+GLOBFNDB DS    PL06               CUMULATIVE FOUND COUNT - BINARY  SRCH
+GLOBNOTE DS    PL06               CUMULATIVE   NOT FOUND - EFFECTIVE DT
+GLOBNOTT DS    PL06               CUMULATIVE   NOT FOUND - TIMESTAMP
+GLOBNOTX DS    PL06               CUMULATIVE   NOT FOUND - EXACT  TSTMP
+GLOBNOTR DS    PL06               CUMULATIVE   NOT FOUND - REVERSE SCAN
+GLOBNOTB DS    PL06               CUMULATIVE   NOT FOUND - BINARY  SRCH
+*
+GLOBXBEG DS    aD                 BEG  OF EXTENSION BUFFER
+GLOBXMAX DS    aD                 END  OF EXTENSION BUFFER
+GLOBXHI  DS    aD                 "HIGHWATER MARK" (MAX  ADDRESS USED)
+GLOBXUSE DS    AL04               "LR BUFFER EXTENSION" IN-USE WORKAREA
+GLOBXCNT DS    FL04               "OVERFLOW"  USAGE COUNT         @020I
+*                                                                 @020I
+GLOBXQUC DS    HL02               "OVERFLOW"  QUEUE COUNT         @020I
+GLOBXQUM DS    HL02               "OVERFLOW"  QUEUE MAX           @020I
+*
+GLOBtSIZ DS    fL04               "TBUFSIZE"  SIZE  (MEG)
+GLOBbSIZ DS    fL04               "BUFSIZE" SIZE  (MEG)
+*
+GLOBPRNT DS    CL01               GLOBAL  REPORTING FIRSTTIME  FLAG
+GLOBLKUP DS    XL01               LOOK-UP NOT FOUND OPTION     CODE
+GLOBIDDN DS    XL01               IGNORE  MISSING   DDNAME
+GLOBDCMP DS    XL01               DECOMPRESS NUMERIC  PAD  ("CT") COLS
+*
+GLOBBRKC DS    PL06               CUMULATIVE BREAK   ID       COUNT
+GLOBMDSW DS    PL06               CUMULATIVE SRB/TCB SWITCH   COUNT
+*
+GLOBECNT DS    HL02               ENTITY  COUNT
+GLOBFCNT DS    HL02               FILE    COUNT
+GLOBKEYM DS    HL02               MAXIMUM KEY       LENGTH
+*                                                                 @020I
+GLOBBRKL DS    HL02               BREAK   LENGTH
+GLOBNBUF DS    HL02               "BUFNO"                         @020I
+GLOBMPTR DS    HL02               "PTRTBLSIZE" (MEGS)             @020I
+*
+GLOBVLST DS    AL04               DECOMPRESSED  VIEW  LIST ADDRESS
+*
+GLOBBXIT DS    CL08               BUFFER  READY EXIT  NAME
+GLOBBXEP DS    AL04               BUFFER  READY EXIT  TRUE ENTRY POINT
+GLOBBXCA DS    AL04               BUFFER  READY EXIT  CALL ADDRESS
+GLOBBXPM DS    CL32               BUFFER  READY EXIT  PARAMETERS
+*
+Globrdcb ds    al04               Address of dcb for MERGRPT
+*
+GLOBLEN  EQU   (*-GLOBAREA)

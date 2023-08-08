@@ -1,0 +1,89 @@
+FILEAREA DSECT
+*
+*
+* (C) COPYRIGHT IBM CORPORATION 2008, 2018.
+*     Copyright Contributors to the GenevaERS Project.
+* SPDX-License-Identifier: Apache-2.0
+*
+**********************************************************************
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+*  or implied.
+*  See the License for the specific language governing permissions
+*  and limitations under the License.
+*
+FILEPRFX DS   0CL11               EVENT   RECORD PREFIX
+FILERTYP DS    CL08               EVENT   RECORD TYPE    (STRUCTURE ID)
+FILEPART DS    CL02               EVENT   RECORD SOURCE  (PARTITION)
+FILERSRC DS    CL01               EVENT   RECORD SOURCE  (CATEGORY)
+FILEETYP DS    CL01               ENTITY    TYPE
+FILECLAP DS    CL01               COLLAPSE  CODE
+FILERECF DS    CL01               EVENT   RECORD FORMAT  ("F","V")
+FILERECL DS    HL02               EVENT   RECORD LENGTH - CURRENT
+FILEMAXL DS    HL02               EVENT   RECORD LENGTH - MAXIMUM
+FILEPRTL DS    HL02               EMBEDED PARTITION LEN  (EXCL 11)
+FILEKEYO DS    HL02               EVENT     KEY  OFFSET
+FILEKEYL DS    HL02               EVENT     KEY  LENGTH
+FILEBRKL DS    HL02               BREAK     ID   LENGTH
+FILETMSO DS    HL02               TIMESTAMP      OFFSET
+FILEEFDO DS    HL02               EFFECTIVE DATE OFFSET
+FILEPROO DS    HL02               PROFILE   ID   OFFSET
+FILEICNT DS    XL08   WAS PL06    EVENT   RECORD COUNT  - INPUT
+FILEDCNT DS    XL08   WAS PL06    DUPLICATE RECORD  CNT
+FILEPRMA DS    A                  PARAMETER TABLE ENTRY  ADDRESS
+FILEPROA DS    A                  RELATED PROFILE ENTITY PARM  ADDR
+FILEINIA DS    A                  INITIALIZATION RECORD  ADDRESS
+FILEOPNA DS    A                  OPEN    FILE   LIST ENTRY ADDRESS
+FILEMINA DS    A                  SHARED  DIRECTORY - 1ST RECORD  PTR
+FILEBLKA DS    AD                 EVENT BLOCK ADDRESS (CURR BLK)   PGC4
+FILEEODA DS    AD                 EVENT BLOCK END-OF-DATA ADDRESS  PGC2
+FILERECA DS    AD                 EVENT RECORD ADDRESS (CURR REC) PGC4
+*
+FILEVREC DS    A                  DECOMPRESSED VIEW DEFN  REC ADDRESS
+*
+FILEKXEP DS    A                  ENTITY KEY EXIT TRUE ENTRY POINT@008I
+FILERXEP DS    A                  ENTITY  READ EXIT TRUE   ENTRY POINT
+*                                                                 @008I
+FILERXCA DS    A                  ENTITY  READ EXIT CALL   ADDRESS
+FILERXAN DS    A                  ENTITY  READ EXIT ANCHOR
+FILERXRC DS    F                  ENTITY READ EXIT RETURN CODE    @008I
+FILERXPT DS    AD                 ENTITY READ EXIT RETURN REC PTR @008I
+FILERXRL DS    F                  ENTITY READ EXIT RETURN REC LEN @008I
+*
+FILEPXEP DS    A                  PROFILE   ID EXIT TRUE   ENTRY POINT
+FILEPXCA DS    A                  PROFILE   ID EXIT CALL   ADDRESS
+FILEPXAN DS    A                  PROFILE   ID EXIT ANCHOR
+*
+UR20ADDR DS    A                  GVBUR20/GVBUR30   ADDRESS
+*
+UR20PARM DS    A                  STGUR20 PARAMETER LIST
+*
+UR20P1   GVBUR20P PRE=UR20,DSECT=N
+*UR20FC   DS    HL02              FUNCTION CODE
+*UR20RC   DS    HL02              RETURN   CODE
+*UR20ERRC DS    HL02              ERROR    CODE
+*UR20RECL DS    HL02              RECORD   LENGTH
+*UR20RECA DS    AL04              RECORD   AREA      ADDRESS
+*UR20RBN  DS    FL04              RELATIVE BLOCK     NUMBER
+*UR20DDN  DS    CL08              FILE     DDNAME
+*UR20OPT1 DS    CL01              I/O MODE(I=INPUT, O=OUTPUT, D=DIRECT)
+*UR20OPT2 DS    CL01
+*UR20NBUF DS    HL02              NUMBER   OF I/O    BUFFERS
+*UR20WPTR DS    AL04              WORK     AREA      POINTER
+*UR20BLKL DS    FL04              CATEGORY OUTPUT  FILE   MAPPING  PGC4
+*UR20BLKA DS    AD                CATEGORY LAST KEY VALUE MAPPING  PGC4
+*
+FILEEOF  DS    CL01               EVENT   "END-OF-FILE"   INDICATOR
+FILENEWB DS    CL01               ENTITY  BEGINS A NEW LR BUFFER BLOCK
+FILEOMAP DS    CL01               CATEGORY OUTPUT  FILE   MAPPING
+FILEKMAP DS    CL01               CATEGORY LAST KEY VALUE MAPPING
+*
+FILELEN  EQU   (*-FILEAREA)
