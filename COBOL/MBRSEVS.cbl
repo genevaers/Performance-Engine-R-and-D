@@ -24,7 +24,7 @@
       *  or implied.                                                  *
       *  See the License for the specific language governing          *
       *  permissions and limitations under the License.               *
-      *                                                               *                                                     
+      *                                                               *         
       ******************************************************************        
       **                PROGRAM INFORMATION                            *        
       ******************************************************************        
@@ -33,7 +33,7 @@
       **                                                               *        
       ** MODULES CALLED: GVBTP90 - I/O HANDLER                         *        
       **                                                               *        
-      ** INPUT FILES:   VSAM CUSTNAME       (CUSTNAMV)                 *        
+      ** INPUT FILES:   VSAM CUSTNAME DDNAME (CUSTNAMV)                *        
       **                                                               *        
       ** OUTPUT FILES:  NONE                                           *        
       **                                                               *        
@@ -43,7 +43,6 @@
       **              0016 - ABEND                                     *        
       **                                                               *        
       ******************************************************************        
-      *                                                                         
        ENVIRONMENT DIVISION.                                                    
        INPUT-OUTPUT SECTION.                                                    
        FILE-CONTROL.                                                            

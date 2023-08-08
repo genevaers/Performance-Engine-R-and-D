@@ -25,12 +25,7 @@
 //         DD DISP=SHR,DSN=IGY.V4R2M0.SIGYCOMP                                  
 //         DD DISP=SHR,DSN=CEE.SCEERUN                                          
 //*                                                                             
-//*        Input dataset
-//*
 //CUSTNAMS DD DISP=(SHR,KEEP,KEEP),DSN=&HLQ..&MLQ..CUSTNAME                     
-//*
-//*        Output dataset
-//*
 //CUSTNAMV DD DISP=(SHR,KEEP,KEEP),DSN=&HLQ..&MLQ..CUSTNAME.CLUSTER             
 //*                                                                             
 //SYSIN    DD DUMMY                                                             

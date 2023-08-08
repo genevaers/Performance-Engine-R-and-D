@@ -1,4 +1,4 @@
-       IDENTIFICATION DIVISION.                                                 
+       IDENTIFICATION DIVISION.
        PROGRAM-ID. MLOADVS.  
       *****************************************************************
       *                                                               *
@@ -24,26 +24,26 @@
       *  or implied.                                                  *
       *  See the License for the specific language governing          *
       *  permissions and limitations under the License.               *
-      *                                                               *                                                   
-      *****************************************************************        
-      **                PROGRAM INFORMATION                           *        
-      *****************************************************************        
-      **                                                              *        
-      ** DESCRIPTION: LOADER FOR VSAM CUSTNAME FILE.                  *        
-      **                                                              *        
-      ** MODULES CALLED: GVBTP90 - I/O HANDLER                        *        
-      **                                                              *        
-      ** INPUT FILES:   CUSTNAME SEQUENTIAL      (CUSTNAMS)           *        
-      **                                                              *        
-      ** OUTPUT FILES:  CUSTNAME VSAM            (CUSTNAMV)           *        
-      **                                                              *        
-      ** REPORTS:       NONE                                          *        
-      **                                                              *        
-      ** RETURN CDS:  0000 - SUCCESSFUL PROCESSING                    *        
-      **              0016 - ABEND                                    *        
-      **                                                              *        
-      *****************************************************************        
-      *                                                                         
+      *                                                               *         
+      *****************************************************************
+      ******************************************************************        
+      **                PROGRAM INFORMATION                            *        
+      ******************************************************************        
+      **                                                               *        
+      ** DESCRIPTION: LOADER FOR VSAM CUSTNAME FILE.                   *        
+      **                                                               *        
+      ** MODULES CALLED: GVBTP90 - I/O HANDLER                         *        
+      **                                                               *        
+      ** INPUT FILES:   CUSTNAME SEQUENTIAL DDNAME (CUSTNAMS)          *        
+      **                                                               *        
+      ** OUTPUT FILES:  CUSTNAME VSAM DDNAME (CUSTNAMV)                *        
+      **                                                               *        
+      ** REPORTS:       NONE                                           *        
+      **                                                               *        
+      ** RETURN CDS:  0000 - SUCCESSFUL PROCESSING                     *        
+      **              0016 - ABEND                                     *        
+      **                                                               *        
+      ******************************************************************
        ENVIRONMENT DIVISION.                                                    
        INPUT-OUTPUT SECTION.                                                    
        FILE-CONTROL.                                                            
