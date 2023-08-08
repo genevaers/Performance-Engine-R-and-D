@@ -1,0 +1,22 @@
+PID,PDESC,PPGMTYPE,PSRCREPO,PSRCFLDR,PSRCSFX,PLANG,PSQL,PMODTYPE
+GVBGDAT,Date Conversion Process (Serial to Gregorian),Subprogram,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBJDAY,Date Conversion Process (Gregorian to Serial),Subprogram,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBMR93,Generic Switch Setter,Main Program,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBMR94,One-Second Delay,Subroutine,Performance-Engine-R-and-D,ASM,asm,HLASM,,OBJONLY
+GVBRD15,Lookup Detail File Conversion Process,SORT E15 Exit,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBRD35,Lookup File Build Process,SORT E35 Exit,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBUR05,Memory Allocation Process,Subprogram,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBUR10,Memory Release Process,Subprogram,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBUR15,Address Pointer Set Process,Subprogram,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBUR30,DB2 Table Read Routine,Subprogram,Performance-Engine-R-and-D,ASM,asm,HLASM,Y,LOADMOD
+GVBUR40,Hardware Compression/Expansion Utility,Subprogram,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBUR45,Table Search Process,Subprogram,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBUR66,COBOL ENQ/DEQ Interface,Subprogram,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBXLCK,Common Key Buffer Lookup Process,MR95 Lookup Exit,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBXLENV,MR95 Environment Info Lookup Process,MR95 Lookup Exit,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBXLFIL,MR95 File Info Lookup Process,MR95 Lookup Exit,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBXLST,String Concatenator,MR95 Lookup Exit,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBXP01,Record Paste-Up Routine,MR95 Lookup Exit,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBXRCK,Common Key Buffer Read Process,MR95 Read Exit,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBXWCK,Common Key Buffer Truncation Process,MR95 Write Exit,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD
+GVBXWTRN,Common Key Transaction Area Updater,MR95 Write Exit,Performance-Engine-R-and-D,ASM,asm,HLASM,,LOADMOD

@@ -1,0 +1,59 @@
+**********************************************************************
+*
+* (C) COPYRIGHT IBM CORPORATION 2004, 2019.
+*     Copyright Contributors to the GenevaERS Project.
+* SPDX-License-Identifier: Apache-2.0
+*
+**********************************************************************
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+*  or implied.
+*  See the License for the specific language governing permissions
+*  and limitations under the License.
+*
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*   GVBLTHDA - LOGIC TABLE "HD" HEADER RECORD                         *
+*                                                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+PARTAREA DSECT
+*
+PARTWORK DS    AL04               "GVBXRCK"  WORK AREA   ADDRESS
+*
+PARTGLOB DS    AL04               GLOBAL     DATA AREA   ADDRESS
+PARTDIRA DS    AL04               DIRECTORY  ADDRESS
+PARTFILA DS    AL04               FILE AREA  ADDRESS
+*
+PARTFNDE DS    FD                 "GVBXLCK   RECORDS     FOUND - EFFECT
+PARTFNDT DS    FD                 "GVBXLCK"  RECORDS     FOUND - TIMEST
+PARTFNDX DS    FD                 "GVBXLCK"  RECORDS     FOUND - EXACT
+PARTFNDR DS    FD                 "GVBXLCK"  RECORDS     FOUND - REVRSE
+PARTFNDB DS    FD                 "GVBXLCK"  RECORDS     FOUND - BINARY
+PARTNOTE DS    FD                 "GVBXLCK"  RECORDS NOT FOUND - EFFECT
+PARTNOTT DS    FD                 "GVBXLCK"  RECORDS NOT FOUND - TIMEST
+PARTNOTX DS    FD                 "GVBXLCK"  RECORDS NOT FOUND - EXACT
+PARTNOTR DS    FD                 "GVBXLCK"  RECORDS NOT FOUND - REVRSE
+PARTNOTB DS    FD                 "GVBXLCK"  RECORDS NOT FOUND - BINARY
+*
+PARTBRKC DS    FD                 PARTITION  BREAK  ID   COUNT
+PARTMDSW DS    FD                 PARTITION SRB/TCB MODE SWITCHES
+*
+PARTLSTB DS    AL04               RECORD    POINTER LIST ADDRESS
+PARTPROB DS    AL04               PROFILE ID  TABLE BEGINNING    ADDR
+*
+CKTRNADR DS    AL04              "GENCKTRN" ADDRESS
+CKVRTADR DS    AL04              "GENCKVRT" ADDRESS
+CKSBADR  DS    AL04              "GENCKSB"  ADDRESS
+CKBRADR  DS    AL04              "GENCKBR"" ADDRESS
+CKTKNADR DS    AL04              "GENCKTKN" ADDRESS
+CKDIRADR DS    AL04              "GENCKDIR" ADDRESS
+*
+PARTLEN  EQU   *-PARTAREA
