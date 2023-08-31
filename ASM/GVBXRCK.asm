@@ -1,7 +1,7 @@
         TITLE 'GVBXRCK - READ/MERGE COMMON KEY ENTITY FILES'
 **********************************************************************
 *
-* (C) COPYRIGHT IBM CORPORATION 2006, 2021.
+* (C) COPYRIGHT IBM CORPORATION 2006, 2023.
 *     Copyright Contributors to the GenevaERS Project.
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -5829,7 +5829,7 @@ CLOSOPEN ds    0h
          USING IHADCB,R2
 *
          MVC   REENTWK(8),OPENPARM
-         OPEN  ((R2),OUTPUT),MODE=31,MF=(E,REENTWK) OPEN  FILE
+         OPEN  ((R2),EXTEND),MODE=31,MF=(E,REENTWK) OPEN  FILE
          if tm,dcboflgs,dcbofopn,no  did it fail to open?
 *
            GVBMSG FORMAT,MSGNO=OPEN_MERGRPT_FAIL,SUBNO=2,              +
