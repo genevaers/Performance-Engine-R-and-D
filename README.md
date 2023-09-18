@@ -24,5 +24,5 @@ GVBXR9   -- ASM read exit using VSAM
 
 GVBXR1   -- ASM read exit using ICHEINTY to obtain RACF definitions of users
 GVBXR3   -- ASM read exit using ICHEINTY to obtain RACF definitions of groups
-GVBXR5   -- ASM read exit using to correlate results and produce report
+GVBXR5   -- ASM read exit used to correlate these results and produce report
 
