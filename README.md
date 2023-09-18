@@ -11,7 +11,7 @@ DTGENASM -- JCL to assemble data generator
 DTGENLNK -- JCL to link data generator
 DTGENRUN -- JCL to execute data generator.
 
-## Example Read Exits
+## Example GenevaERS Performance Engine Exits
 
 GVBXRCK  -- read exit implementing common key buffering
 GVBXLCK  -- related lookup exit implementing common key buffering
