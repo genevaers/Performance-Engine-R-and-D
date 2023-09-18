@@ -1,6 +1,6 @@
 ********************************************************************#VB
 *
-* (C) COPYRIGHT IBM CORPORATION 2003, 2021.
+* (C) COPYRIGHT IBM CORPORATION 2021.
 *     Copyright Contributors to the GenevaERS Project.
 * SPDX-License-Identifier: Apache-2.0
 *
