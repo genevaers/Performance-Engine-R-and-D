@@ -36,6 +36,41 @@ GVBXR1   -- ASM read exit using ICHEINTY to obtain RACF definitions of users.
 
 GVBXR3   -- ASM read exit using ICHEINTY to obtain RACF definitions of groups.
 
-GVBXR5   -- ASM read exit used to correlate these results and produce report.
+GVBXR5   -- ASM read exit used to correlate both these results and produce report.
+
+
+GVBJDAT  -- ASM date routine
+
+GVBJDAY  -- ASM julian calendar routine
+
+GVBMR93  -- ASM program used to schedule execution of multiple batch jobs in specified sequence
+
+GVBMR94  -- ASM wait/delay routine
+
+GVBRD15  -- ASM routine to build Geneva reference data file
+
+GVBRD35  -- ASM routine to build Geneva reference data file
+
+GVBUR05  -- ASM routine to allocate ZOS getmain storage (for old COBOL)
+
+GVBUR10  -- ASM routine to release ZOS getmain storage (for old COBOL)
+
+GVBUR15  -- ASM routine to set pointer variable to address of data area (for old COBOL)
+
+GVBUR30  -- ASM routine to read DB2 table
+
+GVBUR40  -- ASM routine to compress/decompress a record
+
+GVBUR45  -- ASM routine to initialize Geneva memory resident lookup table
+
+GVBUR66  -- ASM routine for ENQ/DEQ (for COBOL)
+
+
+GVBUDIR  -- Program used to obtain list of PDS(E) members
+
+GVBUPDS  -- Program used to scan list of PDS(E) members for certain characters
+
+
+
 
 
