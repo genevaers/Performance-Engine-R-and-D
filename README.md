@@ -7,8 +7,11 @@ These extensions contain sample GenevaERS user exits as well as utilities useful
 Generator for sample test data used in conjunction with GVBDEMO views.
 
 GVBDTGEN -- ASM source code of data generator.
+
 DTGENASM -- JCL to assemble data generator.
+
 DTGENLNK -- JCL to link data generator.
+
 DTGENRUN -- JCL to execute data generator.
 
 ## Example GenevaERS Performance Engine Exits
