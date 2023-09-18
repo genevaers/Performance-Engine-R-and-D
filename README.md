@@ -23,6 +23,15 @@ GVBXLCK  -- related lookup exit implementing common key buffering.
 GVBXWCK  -- related write exit implementing common key buffering.
 
 
+GVBXLENV -- lookup exit to obtain environment information
+
+GVBXLFIL -- lookup exit to obtain file information
+
+GVBXLST  -- lookup exit to concatenate list of strings
+
+GVBXLUDB -- lookup exit which reads DB2 table by key value
+
+
 GVBXR6   -- COBOL read exit using QSAM.
 
 GVBXR7   -- ASM read exit using QSAM.
@@ -39,11 +48,11 @@ GVBXR3   -- ASM read exit using ICHEINTY to obtain RACF definitions of groups.
 GVBXR5   -- ASM read exit used to correlate both these results and produce report.
 
 
+## Example utility routines available for GenevaERS Performance Engine Exits
+
 GVBJDAT  -- ASM date routine
 
 GVBJDAY  -- ASM julian calendar routine
-
-GVBMR93  -- ASM program used to schedule execution of multiple batch jobs in specified sequence
 
 GVBMR94  -- ASM wait/delay routine
 
@@ -65,10 +74,16 @@ GVBUR45  -- ASM routine to initialize Geneva memory resident lookup table
 
 GVBUR66  -- ASM routine for ENQ/DEQ (for COBOL)
 
+GVBXP01  -- ASM routine to return address of logical record for a given kep
 
-GVBUDIR  -- Program used to obtain list of PDS(E) members
 
-GVBUPDS  -- Program used to scan list of PDS(E) members for certain characters
+## GenevaERS utlities
+
+GVBMR93  -- ASM program used to schedule execution of multiple batch jobs in specified sequence
+
+GVBUDIR  -- ASM program used to obtain list of PDS(E) members
+
+GVBUPDS  -- ASM program used to scan list of PDS(E) members for certain characters
 
 
 
