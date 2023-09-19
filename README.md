@@ -40,12 +40,16 @@ GVBXR8   -- COBOL read exit using VSAM (see BLDXR8 to build, DEMORXIT for run jo
 
 GVBXR9   -- ASM read exit using VSAM (see BLDXR9 to build, DEMORXIT for run job)
 
+GVBXRA   -- ASM read exit to read ADABAS data
 
-GVBXR1   -- ASM read exit using ICHEINTY to obtain RACF definitions of users (see BLDXR1 to build, DEMOXD1 JCL for run job)
 
-GVBXR3   -- ASM read exit using ICHEINTY to obtain RACF definitions of groups (see BLDXR3 to build, DEMOXD2 JCL for run job)
+GVBXR1   -- ASM read exit using ICHEINTY to obtain RACF definitions of users (see BLDXR1 for build job)
 
-GVBXR5   -- ASM read exit used to correlate both these results and produce report (BLDXR5 to build, see DEMOXD3 JCL for run job).
+GVBXR3   -- ASM read exit using ICHEINTY to obtain RACF definitions of groups (see BLDXR3 for build job)
+
+GVBXR5   -- ASM read exit used to correlate both above results and produce report (BLDXR5 for build job)
+
+The JCL to run Performance Engine with these exits is: DEMOXD1, DEMOXD2, DEMOXD3, DEMOXD4, DEMOXD1, DEMOXD2, DEMOXD3, DEMOXD4
 
 
 ## Example utility routines available for GenevaERS Performance Engine Exits
@@ -88,9 +92,9 @@ DEFVCUST -- JCL to define customer file as VSAM cluster
 
 LSTVSAM  -- JCL to list/delete customer file VSAM cluster
 
-MLOADVS  -- COBOL program to load customer file VSAM cluster (see BLDLOAD for build job)
+MLOADVS  -- COBOL program to load customer file VSAM cluster (see BLDLOAD to build, RUNLOAD for run job)
 
-MBRSEVS  -- COBOL program to read customer file VSAM cluster (see BLDBRWS for build job)
+MBRSEVS  -- COBOL program to read customer file VSAM cluster (see BLDBRWS to build, RUNBRSE for run job)
 
 
 
