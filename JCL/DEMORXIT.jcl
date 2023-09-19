@@ -4,15 +4,27 @@
 //          CLASS=A,                                                            
 //          MSGLEVEL=(1,1),                                                     
 //          MSGCLASS=X                                                          
-//*                                                                             
-//         EXPORT SYMLIST=*                                                     
-//*                                                                             
-//*        SET HLQ=<YOUR-TSO-PREFIX>                                            
-//         SET MLQ=GVBDEMO                                                      
-//*                                                                             
-//*JOBLIB   DD DISP=SHR,DSN=&HLQ..MLQ..GVBLOAD                                  
-//JOBLIB   DD DISP=SHR,DSN=GEBT.A4A$X.ZIIPLOAD                                  
-//*                                                                             
+//********************************************************************    
+//*                                                                       
+//* (C) COPYRIGHT IBM CORPORATION 2023.                                   
+//*    Copyright Contributors to the GenevaERS Project.                   
+//*SPDX-License-Identifier: Apache-2.0                                    
+//*                                                                       
+//********************************************************************    
+//*                                                                       
+//*  Licensed under the Apache License, Version 2.0 (the "License");      
+//*  you may not use this file except in compliance with the License.     
+//*  You may obtain a copy of the License at                              
+//*                                                                       
+//*     http://www.apache.org/licenses/LICENSE-2.0                        
+//*                                                                       
+//*  Unless required by applicable law or agreed to in writing, software  
+//*  distributed under the License is distributed on an "AS IS" BASIS,    
+//*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express         
+//*  or implied.                                                          
+//*  See the License for the specific language governing permissions      
+//*  and limitations under the License.                                   
+//*     
 //*********************************************************************         
 //*                                                                             
 //*     GVBDEME  - EXECUTE CONTROL FILE CREATION, REFERENCE AND EXTRACT         
@@ -36,6 +48,13 @@
 //*                                                                             
 //*********************************************************************         
 //*                                                                             
+//         EXPORT SYMLIST=*                                                     
+//*                                                                             
+//*        SET HLQ=<YOUR-TSO-PREFIX>                                            
+//         SET MLQ=GVBDEMO                                                      
+//*                                                                             
+//JOBLIB   DD DISP=SHR,DSN=&HLQ..MLQ..GVBLOAD                                  
+//                                                                             
 //*********************************************************************         
 //* DELETE THE FILE(S) CREATED IN NEXT STEP                                     
 //*********************************************************************         
@@ -94,7 +113,7 @@ UNDERSCORE=0
 //RUNVIEWS DD *                                                                 
 10724                                                                           
 //*                                                                             
-//WBXMLI   DD DSN=NBEESLE.DEMO.OPEN.SOURCE.EXIT.VIEWS.XML,                      
+//WBXMLI   DD DSN=&HLQ..&MLQ..DEMO.OPEN.SOURCE.EXIT.VIEWS.XML,                      
 //            DISP=SHR                                                          
 //*                                                                             
 //*        <<< OUTPUT GENEVAERS CONTROL FILES >>>                               
