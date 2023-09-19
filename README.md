@@ -84,6 +84,14 @@ GVBUDIR  -- ASM program used to obtain list of PDS(E) members (see PDSSRCHR to r
 
 GVBUPDS  -- ASM program used to scan list of PDS(E) members for certain characters (see PDSSRCHR to run).
 
+DEFVCUST -- JCL to define customer file as VSAM cluster
+
+LSTVSAM  -- JCL to list/delete customer file VSAM cluster
+
+MLOADVS  -- COBOL program to load customer file VSAM cluster (see BLDLOAD for build job)
+
+MBRSEVS  -- COBOL program to read customer file VSAM cluster (see BLDBRWS for build job)
+
 
 
 
