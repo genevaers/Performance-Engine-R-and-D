@@ -1,3 +1,4 @@
+         TITLE    'EXAMPLE: OBTAIN LIST OF MEMBERS IN PDSE OR PDS'
 **********************************************************************
 *
 * (C) COPYRIGHT IBM CORPORATION 2023.
@@ -27,7 +28,6 @@
 *  An output file to DDNAME DDDRUCK. It is run before GVBUPDS.
 *
 ***********************************************************************
-         TITLE    'EXAMPLE: OBTAIN LIST OF MEMBERS IN PDSE OR PDS'
 *
          IHASAVER DSECT=YES,SAVER=YES,SAVF4SA=YES,SAVF5SA=YES,TITLE=NO
 *

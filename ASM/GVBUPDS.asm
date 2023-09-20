@@ -1,3 +1,4 @@
+         TITLE    'EXAMPLE: scan members of pdse for suspicious chars'
 **********************************************************************
 *
 * (C) COPYRIGHT IBM CORPORATION 2023.
@@ -30,8 +31,6 @@
 *  Acceptable characters are defined in table ALPHATRT.
 *
 ***********************************************************************
-
-         TITLE    'EXAMPLE: scan members of pdse for suspicious chars'
 *
          IHASAVER DSECT=YES,SAVER=YES,SAVF4SA=YES,SAVF5SA=YES,TITLE=NO
 *
