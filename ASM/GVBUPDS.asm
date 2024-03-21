@@ -1,4 +1,4 @@
-         TITLE    'EXAMPLE: scan members of pdse for suspicious chars'
+         TITLE    'GVBUPDS: scan members of pdse for suspicious chars'
 **********************************************************************
 *
 * (C) COPYRIGHT IBM CORPORATION 2023.
@@ -100,16 +100,16 @@ PDSENTNM DS 800CL8
 DYNLEN   EQU   *-DYNAREA                 DYNAMIC AREA LENGTH
 *
 *
-EXAMPLE  RMODE 24
-EXAMPLE  AMODE 31
+GVBUPDS  RMODE 24
+GVBUPDS  AMODE 31
 *
-EXAMPLE  CSECT
+GVBUPDS  CSECT
 *
 *        ENTRY LINKAGE
 *
          STM   R14,R12,12(R13)           PUSH CALLER REGISTERS
          LLGTR R12,R15                   ESTABLISH ...
-         USING EXAMPLE,R12               ... ADDRESSABILITY
+         USING GVBUPDS,R12               ... ADDRESSABILITY
 *
          GETMAIN R,LV=DYNLEN             GET DYNAMIC STORAGE
          LR    R11,R1                    MOVE GETMAINED ADDRESS TO R11
@@ -135,7 +135,7 @@ D1       USING IHADCB,OUTDCB
          OPEN  ((R2),(OUTPUT)),MODE=31,MF=(E,WKREENT)
          TM    48(R2),X'10'              SUCCESSFULLY OPENED  ??
          JO    MAIN_100                  YES - BYPASS ABEND
-         WTO 'MCTEST: DDPRINT OPEN FAILED'
+         WTO 'GVBUPDS: DDPRINT OPEN FAILED'
          MVC   WKRETC,=F'8'
          J     DONE
 *
@@ -144,7 +144,7 @@ D1       USING IHADCB,OUTDCB
 MAIN_100 EQU   *
          MVC   WKDDNAME,=CL8'DDPRINT'
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(32),=CL32'MCTEST: BEING EXECUTED WITH DD:'
+         MVC   WKPRINT(32),=CL32'GVBUPDS: BEING EXECUTED WITH DD:'
          MVC   WKPRINT+32(8),WKDDNAME
          LA    R2,OUTDCB
          LA    R0,WKPRINT
@@ -164,7 +164,7 @@ D2       USING IHADCB,DINDCB
          OPEN  ((R2),(INPUT)),MODE=31,MF=(E,WKREENT)
          TM    48(R2),X'10'              SUCCESSFULLY OPENED  ??
          JO    A0100                     YES - BYPASS ABEND
-         WTO 'MCTEST: DDDIRIN OPEN FAILED'
+         WTO 'GVBUPDS: DDDIRIN OPEN FAILED'
          MVC   WKRETC,=F'8'
          J     DONE
 *
@@ -178,7 +178,7 @@ A0104    EQU   *
          LA    R4,8(R4)
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(17),=CL17'MCTEST: XXXXXXXX '
+         MVC   WKPRINT(17),=CL17'GVBUPDS: XXXXXXXX '
          MVC   WKPRINT+8(8),INAREA
          LA    R2,OUTDCB
          LA    R0,WKPRINT
@@ -193,8 +193,8 @@ A0110    EQU   *
          CLOSE ((R2))
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(44),=CL44'MCTEST: EXPECTING TO PROCESS XXXXXXX M+
-               EMBERS'
+         MVC   WKPRINT(44),=CL44'GVBUPDS: EXPECTING TO PROCESS XXXXXXX +
+               MEMBERS'
          LH    R15,PDSENTLN
          CVD   R15,DBLWORK
          OI    DBLWORK+L'DBLWORK-1,X'0F'
@@ -221,7 +221,7 @@ D3       USING IHADCB,MINDCB
          OPEN  ((R2),(INPUT)),MODE=31,MF=(E,WKREENT)
          TM    48(R2),X'10'              SUCCESSFULLY OPENED  ??
          JO    A0200                     YES - BYPASS ABEND
-         WTO 'MCTEST: DDMEMIN OPEN FAILED'
+         WTO 'GVBUPDS: DDMEMIN OPEN FAILED'
          MVC   WKRETC,=F'8'
          J     DONE
 *
@@ -274,8 +274,8 @@ A0204    EQU   *
          LTR   R2,R2
          JZ    A0206
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(57),=CL57'MCTEST: suspicious character x on line+
-                Xxxxxxx of member xxxxxxxx : '
+         MVC   WKPRINT(57),=CL57'GVBUPDS: suspicious character x on lin+
+               e Xxxxxxx of member xxxxxxxx : '
          MVC   WKPRINT+29(1),0(R1)
          L     R15,WKMEMLCT
          CVD   R15,DBLWORK
@@ -298,7 +298,7 @@ A0206    EQU   *
 *
 A0210    EQU   *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(35),=CL35'MCTEST: XXXXXXXX XXXXXXX LINES READ'
+         MVC   WKPRINT(35),=CL35'GVBUPDS: XXXXXXXX XXXXXXX LINES READ'
          MVC   WKPRINT+8(8),0(R9)
          L     R15,WKMEMLCT
          CVD   R15,DBLWORK
@@ -318,8 +318,8 @@ A0210    EQU   *
 *
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(53),=CL53'MCTEST: PROCESSED XXXXXXX MEMBERS XXXX+
-               XXX TOTAL LINES'
+         MVC   WKPRINT(53),=CL53'GVBUPDS: PROCESSED XXXXXXX MEMBERS XXX+
+               XXXX TOTAL LINES'
          L     R15,WKMEMCT
          CVD   R15,DBLWORK
          OI    DBLWORK+L'DBLWORK-1,X'0F'
@@ -338,8 +338,8 @@ A0210    EQU   *
 *
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(8),=CL8'MCTEST: '
-         MVC   WKPRINT+8(09),=CL9'COMPLETED'
+         MVC   WKPRINT(8),=CL8'GVBUPDS: '
+         MVC   WKPRINT+9(09),=CL9'COMPLETED'
          LA    R2,OUTDCB
          LA    R0,WKPRINT
          PUT   (R2),(R0)

@@ -1,4 +1,4 @@
-         TITLE    'EXAMPLE: OBTAIN LIST OF MEMBERS IN PDSE OR PDS'
+         TITLE    'GVBUDIR: OBTAIN LIST OF MEMBERS IN PDSE OR PDS'
 **********************************************************************
 *
 * (C) COPYRIGHT IBM CORPORATION 2023.
@@ -66,6 +66,7 @@ WKTOKNCTT DS   A                  A(CTT)
 WKECBLST DS    A                  ADDRESS OF ECB LIST TO WAIT ON
 WORKDATE DS    CL16
 W_TOD    DS    CL16
+WKSEENTL DS    A
 IPLSTCK  DS    D
 CONV_MFL DS    0F
          STCKCONV MF=L
@@ -98,16 +99,16 @@ PDSEREST DS    CL34
 DDSEENTL EQU   *-PDSENM
 *
 *
-EXAMPLE  RMODE 24
-EXAMPLE  AMODE 31
+GVBUDIR  RMODE 24
+GVBUDIR  AMODE 31
 *
-EXAMPLE  CSECT
+GVBUDIR  CSECT
 *
 *        ENTRY LINKAGE
 *
          STM   R14,R12,12(R13)           PUSH CALLER REGISTERS
          LLGTR R12,R15                   ESTABLISH ...
-         USING EXAMPLE,R12               ... ADDRESSABILITY
+         USING GVBUDIR,R12               ... ADDRESSABILITY
 *
          GETMAIN R,LV=DYNLEN             GET DYNAMIC STORAGE
          LR    R11,R1                    MOVE GETMAINED ADDRESS TO R11
@@ -133,7 +134,7 @@ D1       USING IHADCB,OUTDCB
          OPEN  ((R2),(OUTPUT)),MODE=31,MF=(E,WKREENT)
          TM    48(R2),X'10'              SUCCESSFULLY OPENED  ??
          JO    MAIN_100                  YES - BYPASS ABEND
-         WTO 'MBTEST: DDPRINT OPEN FAILED'
+         WTO 'GVBUDIR: DDPRINT OPEN FAILED'
          J     DONE
 *
 *                                                                @I1015
@@ -141,7 +142,7 @@ D1       USING IHADCB,OUTDCB
 MAIN_100 EQU   *
          MVC   WKDDNAME,=CL8'DDPRINT'
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(32),=CL32'MBTEST: BEING EXECUTED WITH DD:'
+         MVC   WKPRINT(32),=CL32'GVBUDIR: BEING EXECUTED WITH DD:'
          MVC   WKPRINT+32(8),WKDDNAME
          LA    R2,OUTDCB
          LA    R0,WKPRINT
@@ -161,7 +162,7 @@ D2       USING IHADCB,OU2DCB
          OPEN  ((R2),(OUTPUT)),MODE=31,MF=(E,WKREENT)
          TM    48(R2),X'10'              SUCCESSFULLY OPENED  ??
          JO    MAIN_102                  YES - BYPASS ABEND
-         WTO 'MBTEST: DDDRUCK OPEN FAILED'
+         WTO 'GVBUDIR: DDDRUCK OPEN FAILED'
          J     DONE
 *
 MAIN_102 EQU   *
@@ -177,7 +178,7 @@ D3       USING IHADCB,INDCB
          OPEN  ((R2),(INPUT)),MODE=31,MF=(E,WKREENT)
          TM    48(R2),X'10'              SUCCESSFULLY OPENED  ??
          JO    A0100                     YES - BYPASS ABEND
-         WTO 'MBTEST: PDSEINDD OPEN FAILED'
+         WTO 'GVBUDIR: PDSEINDD OPEN FAILED'
          J     A0112
 *
          USING PDSEDIR,R7
@@ -185,6 +186,17 @@ A0100    EQU   *
          WTO 'PDSE DD OPENED'
          LAY   R4,PDSENTNM
          GET   INDCB,INAREA       READ MEMBER DIRECTORY RECORD
+*
+         LAY   R7,INAREA          Determine slot size to use
+         LGH   R0,PDSELL          for PDS(E) directory members
+         AR    R7,R0
+         CLC   0(2,R7),=XL2'FFFF'
+         JNE   A0102
+         MVC   WKSEENTL,=A(42)
+         J     A0104
+A0102    EQU   *
+         MVC   WKSEENTL,=A(12)
+*
 A0104    EQU   *
          LAY   R7,INAREA
          LGH   R5,PDSELL
@@ -193,7 +205,7 @@ A0104    EQU   *
          AGHI  R5,-2              ADJUST MAX ADDR FOR LENGTH (H)
          AGHI  R3,-2              ADJUST LENGTH OF ENTRIES FOR LEN (H)
          XR    R2,R2
-         D     R2,=A(DDSEENTL)
+         D     R2,WKSEENTL
          AH    R3,PDSENTLN        ACCUMULATE TOTAL NUMBER OF MEMBERS
          STH   R3,PDSENTLN
 A0108    EQU   *
@@ -204,8 +216,8 @@ A0108    EQU   *
          LA    R4,8(R4)
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(17),=CL17'MBTEST: XXXXXXXX '
-         MVC   WKPRINT+8(8),PDSENM
+         MVC   WKPRINT(17),=CL17'GVBUDIR: XXXXXXXX '
+         MVC   WKPRINT+9(8),PDSENM
          LA    R2,OUTDCB
          LA    R0,WKPRINT
          PUT   (R2),(R0)
@@ -214,7 +226,7 @@ A0108    EQU   *
          LA    R0,PDSENM
          PUT   (R2),(R0)
 *
-         LA    R7,DDSEENTL(,R7)
+         A     R7,WKSEENTL
          CR    R7,R5
          JL    A0108
 *
