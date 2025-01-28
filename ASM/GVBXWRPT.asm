@@ -118,6 +118,7 @@ WKRECXNM DS    CL8
 WKDBL    DS    D                  DOUBLEWORD WORK AREA
 WKLTBEGN DS    A
 WKLTCNT  DS    F
+WKNUMSLT DS    F
 WKEMINU1 DS    F                  One minus number slots (bubble sort)
 WKBLASTE DS    CL9                Last entry to process
          DS    XL3
@@ -261,22 +262,42 @@ MAINLINE EQU   *
 ***********************************************************************
 *    TERM PHASE PROCESSING                                             
 ***********************************************************************
-*                                                                      
-         WTO 'GVBXWINF TERMINATION PROCESSING'                         
-*                                                                      
-         L     R1,GP_THRD_WA                                           
-         USING THRDAREA,R1                                             
-         L     R1,THRDMAIN                                             
-         MVC   WKLTBEGN,LTBEGIN                                        
-         MVC   WKLTCNT,LTCOUNT                                         
-         DROP  R1 THRDAREA                                             
-*                                                                      
-         L     R15,=A(EXITRPT)                                         
-         BASR  R14,R15                                                 
-*                                                                      
-         LHI   R15,0              SET  RETURN CODE                     
-         J     RETURN                                                  
-*                                                                      
+* 
+         WTO 'GVBXWINF TERMINATION PROCESSING'
+*
+         L     R1,GP_THRD_WA
+         USING THRDAREA,R1
+         L     R1,THRDMAIN
+         MVC   WKLTBEGN,LTBEGIN
+         MVC   WKLTCNT,LTCOUNT
+         DROP  R1 THRDAREA
+*
+         L     R15,=A(EXITLST)
+         BASR  R14,R15
+*
+*
+         L     R1,WKNUMSLT        Number slots including duplicates
+         LTR   R1,R1
+         JNP   A0090
+         LAY   R3,WKXTAB         => first slot
+*
+RPTLOOP  EQU   *
+         CLC   WKBLASTE,0(R3)   Same as previous slot processed ?
+         JE    RPTLP02          (won't be 1st time through)
+*
+*   call routine with R3 => desired slot
+         L     R15,=A(EXITRPT)
+         BASR  R14,R15
+*
+RPTLP02  EQU   *
+         MVC   WKBLASTE,0(R3)    Keep last entry processed for ref
+         LA    R3,9(,R3) 
+         BRCT  R1,RPTLOOP
+*
+A0090    EQU   *
+         LHI   R15,0              SET  RETURN CODE
+         J     RETURN
+*
 ***********************************************************************
 *  RETURN TO CALLER (GVBMR95)                                         *
 ***********************************************************************
@@ -300,9 +321,10 @@ RETURNIN EQU   *                  RETURN INITIALIZATION
          DROP  R8                                                      
 *                                                                      
 ***********************************************************************
-*  EXITRPT: REPORT OF GENERAERS EXTRACT PHASE USER EXITS              *
+*  EXITLST: GET LIST FOR REPORT OF GENERAERS EXTRACT PHASE USER EXITS *
+*           AND SORT LIST OF EXITS, LEAVING DUPLICATES IN LIST.       *
 ***********************************************************************
-EXITRPT  DS    0H                                                      
+EXITLST  DS    0H                                                      
          STM   R14,R12,12(R13)                                         
          LA    R10,WKSVA2                                              
          ST    R10,RSAFP(,R13)    SET   FORWARD  POINTER IN OLD        
@@ -330,46 +352,53 @@ A0400   EQU    *
 *                                                                      
          LLGT  R8,WKLTBEGN        LOAD LOGIC  TABLE ADDRESS            
          USING LOGICTBL,R8                                             
-*                                                                      
-         LGF   R7,WKLTCNT         LOAD LOGIC  TABLE ENTRY COUNT        
-LTLOOP   EQU   *                                                       
-         CLC   LTFUNC(2),=CL2'WR'                                      
-         JNE   LT0100                                                  
-         CLC   LTWRNAME,SPACEX    EXIT SPECIFIED ???                   
-         JE    LT0990             no, go                               
-*      WR_EX processing                                                
-         MVC   WKRECTXT,=CL13'WRITE EXIT:  '                           
-         MVC   WKRECXNM,LTWRNAME                                       
-LT0010   EQU   *                                                       
-         J     LT0900                                                  
-*                                                                      
-LT0100   EQU   *                                                       
-         CLC   LTFUNC,=CL4'LUEX'                                       
-         JNE   LT0200                                                   
-         CLC   LTLUNAME,SPACEX    EXIT SPECIFIED ???                    
-         JE    LT0990             no, go                                
-*      LU_EX processing                                                 
-         MVC   WKRECTXT,=CL13'LOOKUP EXIT: '                            
-         MVC   WKRECXNM,LTLUNAME                                        
-         J     LT0900                                                   
-*                                                                       
-LT0200   EQU   *                                                        
-         CLC   LTFUNC(2),=CL2'RE'                                       
-         JNE   LT0990                                                   
-         CLC   LTRENAME,SPACEX                                          
-         JE    LT0990                                                   
-*      RE_EX processing                                                 
-         MVC   WKRECTXT,=CL13'READ EXIT:   '                            
-         MVC   WKRECXNM,LTRENAME                                        
-*                                                                       
-*                                                                       
-LT0900  EQU   *                  Write exit information                 
-         LA    R0,WKREC                                                 
-         L     R1,WKEXIDCB                                              
-         PUT   (1),(0)                                                  
-*                                                                       
-LT0990  EQU   *                                                         
-         LGH   R0,LTROWLEN                                              
+*
+         LAY   R3,WKXTAB
+         LGF   R7,WKLTCNT         LOAD LOGIC  TABLE ENTRY COUNT
+LTLOOP   EQU   *
+         CLC   LTFUNC(2),=CL2'WR'
+         JNE   LT0100
+         CLC   LTWRNAME,SPACEX    EXIT SPECIFIED ???
+         JE    LT0990             no, go
+*      WR_EX processin
+         MVC   WKRECTXT,=CL13'WRITE EXIT:  '
+         MVC   WKRECXNM,LTWRNAME
+         MVI   0(R3),C'W'      
+         MVC   1(8,R3),LTRWNAME
+         J     LT0900
+*
+LT0100   EQU   *
+         CLC   LTFUNC,=CL4'LUEX'
+         JNE   LT0200
+         CLC   LTLUNAME,SPACEX    EXIT SPECIFIED ???
+         JE    LT0990             no, go
+*      LU_EX processing
+         MVC   WKRECTXT,=CL13'LOOKUP EXIT: '
+         MVC   WKRECXNM,LTLUNAME
+         MVI   0(R3),C'L'      
+         MVC   1(8,R3),LTLUNAME
+         J     LT0900
+*
+LT0200   EQU   *
+         CLC   LTFUNC(2),=CL2'RE'
+         JNE   LT0990
+         CLC   LTRENAME,SPACEX
+         JE    LT0990
+*      RE_EX processing
+         MVC   WKRECTXT,=CL13'READ EXIT:   '
+         MVC   WKRECXNM,LTRENAME
+         MVI   0(R3),C'R'      
+         MVC   1(8,R3),LTRENAME
+*
+LT0900  EQU   *                   Write exit information
+         LA    R3,9(,R3)          Next tab entry
+*
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
+*
+LT0990  EQU   *
+         LGH   R0,LTROWLEN
          AGR   R8,R0              ADVANCE TO NEXT ROW (31-BIT ADDR)
          BRCT  R7,LTLOOP
          DROP  R8 LOGICTBL
@@ -380,15 +409,14 @@ LT0990  EQU   *
 *
 *   Sort the table, leaving duplicates included
          LR    R4,R3
-         LR    R2,R3
-         S     R2,=F'9'           R2 == ENDING SLOT
          LAY   R3,WKXTAB
          SR    R4,R3              R4 == LENGTH OF FILLED SLOTS
-         C     R4,=F'9'           MORE THAN ONE SLOT LENGTH
-         JNH   BUBBLEX            NO, DON'T DO ANYTHING
          XR    R0,R0
          LR    R1,R4
          D     R0,=F'9'           R1 == QUOTIENT
+         ST    R1,WKNUMSLT
+         C     R1,=F'1'           More than one entry ?
+         JNH   BUBBLEX            No, don't do anything
          BCTR  R1,1               ONE LESS THAN NUMBER OF ENTRIES
          ST    R1,WKEMINU1        KEEP THIS !!
          LAY   R3,WKXTAB
@@ -415,6 +443,21 @@ BUBBLE02 EQU   *
          LTR   R0,R0              Any swaps ?
          JNZ   BUBBLELO           Yes, do it again
 BUBBLEX  EQU   *
+*
+         L     R13,RSABP(,R13)    OLD   SAVE AREA                       
+         LM    R14,R12,12(R13)                                          
+         BR    R14                                                      
+*                                                                      
+***********************************************************************
+*  EXITRPT: REPORT OF GENERAERS EXTRACT PHASE USER EXITS FROM LIST    *
+***********************************************************************
+EXITRPT  DS    0H                                                      
+         STM   R14,R12,12(R13)                                         
+         LA    R10,WKSVA2                                              
+         ST    R10,RSAFP(,R13)    SET   FORWARD  POINTER IN OLD        
+         ST    R13,RSABP(,R10)    SET   BACKWARD POINTER IN NEW        
+         LR    R13,R10            NEW   SAVE AREA                      
+*
 *
          L     R13,RSABP(,R13)    OLD   SAVE AREA                       
          LM    R14,R12,12(R13)                                          
