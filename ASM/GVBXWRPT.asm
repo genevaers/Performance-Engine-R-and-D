@@ -91,16 +91,26 @@
 *                                                                     *
 *        R0  - TEMPORARY WORK    REGISTER                             *
 *                                                                     *
+************************************************************************
+*
+         COPY GVBX95PA
+         GVBAUR35 DSECT=YES
+         Copy GVBASSRT
+         COPY GVBMR95W
+         COPY GVBMR95L
+*
 ***********************************************************************
-                        EJECT                                          
-         COPY GVBX95PA                                                 
-         GVBAUR35 DSECT=YES                                            
-         Copy GVBASSRT                                                 
-         COPY GVBMR95W                                                 
-         COPY GVBMR95L                                                 
+* Fast data mappings and buffer templates                             *
+***********************************************************************
+ESDBUF   IEWBUFF FUNC=MAPBUF,TYPE=ESD,VERSION=6,SIZE=8                 
+CUIBUF   IEWBUFF FUNC=MAPBUF,TYPE=CUI,VERSION=6,BYTES=40960            
+NAMBUF   IEWBUFF FUNC=MAPBUF,TYPE=NAME,VERSION=6,SIZE=8                
+TXTBUF   IEWBUFF FUNC=MAPBUF,TYPE=TEXT,VERSION=6,BYTES=2048            
+IDRBUF   IEWBUFF FUNC=MAPBUF,TYPE=IDRB,VERSION=6,BYTES=4072            
+IDLBUF   IEWBUFF FUNC=MAPBUF,TYPE=IDRL,VERSION=7,BYTES=40960           
 ***********************************************************************
 *                                                                     *
-*       "GVBXWINF" - W O R K A R E A  D E F I N I T I O N             *
+*       "GVBXWRPT" - W O R K A R E A  D E F I N I T I O N             *
 *                                                                     *
 ***********************************************************************
 *
@@ -110,11 +120,16 @@ WKSVA    DS  18F                  REGISTER   SAVE AREA
 WKSVA2   DS  18F                  REGISTER   SAVE AREA
 WKSVA3   DS  18F                  REGISTER   SAVE AREA
 WKEXIDCB DS    A
+WKLIBDCB DS    A
+WKIEWBF  DS    A
+WKMTOKEN DS    F
+WKCURSOR DS    F                  Fast data cursor position. 
+WKCOUNT  DS    F                  Number of entries obtained.
 WKRENTWK DS    XL256
-WKREC    DS   0CL80
+WKREC    DS   0CL125
 WKRECTXT DS    CL13              'LOOKUP EXIT: '
 WKRECXNM DS    CL8
-         DS    CL59
+         DS    CL104
 WKDBL    DS    D                  DOUBLEWORD WORK AREA
 WKLTBEGN DS    A
 WKLTCNT  DS    F
@@ -123,11 +138,10 @@ WKEMINU1 DS    F                  One minus number slots (bubble sort)
 WKBLASTE DS    CL9                Last entry to process
          DS    XL3
 *
-WKPLIST  DS   8A  
+WKPLIST  DS  32F  
 WKXTAB   DS 256XL9                256 user exit entries
+WKPGMNM  DS    CL100              Member, path or entry point name
 *
-WKPLIST  DS   8A                  NAME/TOKEN PARAMETER    LIST
-*                                                                      
 WKLENGTH EQU   *-WKAREA                                                
 *                                                                      
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -177,9 +191,11 @@ GVBXWINF CSECT
 XWINFEYE GVBEYE GVBXWINF                                               
 *                                                                      
 CODE     STM   R14,R12,RSA14(R13) SAVE  CALLER'S  REGISTERS            
-*                                                                      
-         LA    R11,0(,R15)        SET   PROGRAM   BASE    REGISTER     
-         USING GVBXWINF,R11 ------------------------------------------ 
+*
+         LA    R10,0(,R15)        SET   PROGRAM   BASE    REGISTER
+         LA    R11,4095(,R10)     SET   PROGRAM   BASE    REGISTER
+         LA    R11,1(,R11)
+         USING GVBXWINF,R10,R11 --------------------------------------- 
 *                                                                      
          LR    R8,R1              LOAD  PARAMETER LIST    ADDRESS      
          USING GENPARM,R8       -------------------------------------- 
@@ -189,7 +205,7 @@ CODE     STM   R14,R12,RSA14(R13) SAVE  CALLER'S  REGISTERS
          L     R7,GPENVA          LOAD ENVIRONMENT INFO ADDRESS        
          USING GENENV,R7 --------------------------------------------- 
 *                                                                      
-         LR    R10,R13            PRESERVE CALLER'S RSA ADDRESS        
+         LR    R2,R13             PRESERVE CALLER'S RSA ADDRESS        
 *                                                                      
 ***********************************************************************
 *  CHECK FOR INIT PHASE. RETURN IF SO.                                *
@@ -201,7 +217,7 @@ INITPHAS EQU   *
          LHI   R15,0              SET  RETURN CODE FOR OPEN            
          L     R14,GPRTNCA        LOAD RETURN CODE ADDRESS             
          ST    R15,0(,R14)                                             
-         LR    R13,R10            RESTORE  R13                         
+         LR    R13,R2             RESTORE  R13                         
          J     RETURNIN           RETURN INIT                          
 *                                                                      
 OPRDCLTE EQU   *                  OP/RD/CL/TE                          
@@ -232,8 +248,8 @@ WORKALLO EQU   *
 *                                                                      
 ALLCLEAN EQU   *                                                       
          LA    R13,WKSVA          NEW   SAVE AREA                      
-         ST    R13,RSAFP(,R10)    SET   FORWARD  POINTER IN OLD        
-         ST    R10,RSABP(,R13)    SET   BACKWARD POINTER IN NEW        
+         ST    R13,RSAFP(,R2)     SET   FORWARD  POINTER IN OLD        
+         ST    R2,RSABP(,R13)     SET   BACKWARD POINTER IN NEW        
          J     MAINLINE                                                
 *                                                                     *
 *                                                                      
@@ -242,8 +258,8 @@ ALLCLEAN EQU   *
 ***********************************************************************
 CHAIN    EQU   *                                                       
          LA    R13,WKSVA          NEW   SAVE AREA                      
-         ST    R13,RSAFP(,R10)    SET   FORWARD  POINTER IN OLD        
-         ST    R10,RSABP(,R13)    SET   BACKWARD POINTER IN NEW        
+         ST    R13,RSAFP(,R2)     SET   FORWARD  POINTER IN OLD        
+         ST    R2,RSABP(,R13)     SET   BACKWARD POINTER IN NEW        
 *                                                                      
 ***********************************************************************
 *  COMMON MAINLINE PROCESSING                                         *
@@ -260,10 +276,67 @@ MAINLINE EQU   *
          JNE   RETURN0            NOTHING TO DO                        
 *                                                                      
 ***********************************************************************
-*    TERM PHASE PROCESSING                                             
+*    TERM PHASE PROCESSING
 ***********************************************************************
 * 
          WTO 'GVBXWINF TERMINATION PROCESSING'
+*
+***********************************************************************
+*    LOAD FAST API for BINDER
+***********************************************************************
+*
+         LOAD EP=IEWBFDAT                    Issue LOAD.              
+         ST R0,WKIEWBF                       Save entry point address
+*
+***********************************************************************
+*    OBTAIN DCB's and OPEN SYSLIB and REPORT FILE
+***********************************************************************
+*
+         LA    R0,LIBDCBL
+         GETMAIN RU,LV=(0),LOC=BELOW
+         ST    R1,WKLIBDCB
+*
+         L     R2,WKLIBDCB
+         USING IHADCB,R2
+         MVC   0(LIBDCBL,R2),LIBDCB
+*
+         LA    R1,LIBDCBE-LIBDCB(,R2)
+         ST    R1,DCBDCBE
+*
+         MVC   WKRENTWK(8),OPENPARM
+         OPEN  ((R2),INPUT),MODE=31,MF=(E,WKRENTWK)
+         TM    48(R2),X'10'
+         BO    A0040
+         MVC   WKRETC,=F'12'
+         J     A0900
+A0040    EQU    *
+         DROP  R2 IHADCB
+*
+*
+         LA    R0,EXIDCBL
+         GETMAIN RU,LV=(0),LOC=BELOW
+         ST    R1,WKEXIDCB
+*
+         L     R2,WKEXIDCB
+         USING IHADCB,R2
+         MVC   0(EXIDCBL,R2),EXIDCB
+*
+         LA    R1,EXIDCBE-EXIDCB(,R2)
+         ST    R1,DCBDCBE
+*
+         MVC   WKRENTWK(8),OPENPARM
+         OPEN  ((R2),OUTPUT),MODE=31,MF=(E,WKRENTWK)
+         TM    48(R2),X'10'
+         BO    A0040
+         MVC   WKRETC,=F'12'
+         J     A0900
+A0040    EQU    *
+         DROP  R2 IHADCB
+         MVC   WKREC,SPACEX
+*
+***********************************************************************
+*    REFERENCE MAIN THREAD AND BUILD SORTED LIST OF USER EXITS
+***********************************************************************
 *
          L     R1,GP_THRD_WA
          USING THRDAREA,R1
@@ -275,17 +348,59 @@ MAINLINE EQU   *
          L     R15,=A(EXITLST)
          BASR  R14,R15
 *
+***********************************************************************
+*    PROCESS USER EXIT LIST TO PRODUCE REPORT (OMITTING DUPLICATES)
+***********************************************************************
 *
          L     R1,WKNUMSLT        Number slots including duplicates
-         LTR   R1,R1
-         JNP   A0090
          LAY   R3,WKXTAB         => first slot
+         LTR   R1,R1
+         JP    RPTLOOP
+         MVC   WKREC,=C'No user exits found'
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
+         MVC   WKREC,SPACEX
+         MVC   WKRETC,=F'4'
+         J     A0890
 *
 RPTLOOP  EQU   *
          CLC   WKBLASTE,0(R3)   Same as previous slot processed ?
          JE    RPTLP02          (won't be 1st time through)
+         CLI   0(R3),C'W'       Write exit
+         JE    RPT030
+         CLI   0(R3),C'L'       Lookup exit
+         JE    RPT040
+         CLI   0(R3),C'R'       Read exit
+         JE    RPT050
+         WTO   'Exit type not recognized'
+         MVC   WKRETC,=F'16'
+         J     A0890
+RPT030   EQU   *
+         TM    WKSTAT1,X'01'
+         JO    RPT060
+         OI    WKSTAT1,X'01'
+         MVC   WKREC,=C'Write exit(s):'
+         J     A0054
+RPT040   EQU   *
+         TM    WKSTAT1,X'02'
+         JO    RPT060
+         OI    WKSTAT1,X'02'
+         MVC   WKREC,=C'Lookup exit(s):'
+         J     A0054
+RPT050   EQU   *
+         TM    WKSTAT1,X'04'
+         JO    RPT060
+         OI    WKSTAT1,X'04'
+         MVC   WKREC,=C'Read exit(s):'
+RPT054   EQU   *
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
+         MVC   WKREC,SPACEX
 *
 *   call routine with R3 => desired slot
+RPT060   EQU   *
          L     R15,=A(EXITRPT)
          BASR  R14,R15
 *
@@ -294,7 +409,25 @@ RPTLP02  EQU   *
          LA    R3,9(,R3) 
          BRCT  R1,RPTLOOP
 *
-A0090    EQU   *
+***********************************************************************
+*    CLOSE REPORT FILE
+***********************************************************************
+*
+A0890    EQU   *
+         L     R2,WKEXIDCB
+         MVC   WKRENTWK(8),OPENPARM
+         CLOSE ((R2)),MODE=31,MF=(E,WKRENTWK)
+*
+***********************************************************************
+*    TERMINATION
+***********************************************************************
+*
+A0900    EQU   *
+         LA    R0,EXIDCBL
+         L     R1,WKEXIDCB
+         FREEMAIN RU,LV=(0),A=(1)
+*
+A0990    EQU   *
          LHI   R15,0              SET  RETURN CODE
          J     RETURN
 *
@@ -319,37 +452,19 @@ RETURNIN EQU   *                  RETURN INITIALIZATION
          BSM   0,R14              RETURN                               
 *                                                                      
          DROP  R8                                                      
-*                                                                      
+*
+***********************************************************************
 ***********************************************************************
 *  EXITLST: GET LIST FOR REPORT OF GENERAERS EXTRACT PHASE USER EXITS *
 *           AND SORT LIST OF EXITS, LEAVING DUPLICATES IN LIST.       *
 ***********************************************************************
 EXITLST  DS    0H                                                      
          STM   R14,R12,12(R13)                                         
-         LA    R10,WKSVA2                                              
-         ST    R10,RSAFP(,R13)    SET   FORWARD  POINTER IN OLD        
-         ST    R13,RSABP(,R10)    SET   BACKWARD POINTER IN NEW        
-         LR    R13,R10            NEW   SAVE AREA                      
-*                                                                      
-         LA    R0,EXIDCBL                                              
-         GETMAIN R,LV=(0),LOC=BELOW                                    
-         ST    R1,WKEXIDCB                                             
-*                                                                      
-         L     R2,WKEXIDCB                                             
-         USING IHADCB,R2                                               
-         MVC   0(EXIDCBL,R2),EXIDCB                                    
-*                                                                      
-         LA    R1,EXIDCBE-EXIDCB(,R2)                                  
-         ST    R1,DCBDCBE                                              
-*                                                                      
-         MVC   WKRENTWK(8),OPENPARM                                    
-         OPEN  ((R2),OUTPUT),MODE=31,MF=(E,WKRENTWK)                   
-         TM    48(R2),X'10'                                            
-         BO    A0400                                                   
-         DC    H'0'                                                    
-A0400   EQU    *                                                       
-         DROP  R2 IHADCB                                               
-*                                                                      
+         LA    R2,WKSVA2                                              
+         ST    R2,RSAFP(,R13)     SET   FORWARD  POINTER IN OLD        
+         ST    R13,RSABP(,R2)     SET   BACKWARD POINTER IN NEW        
+         LR    R13,R2             NEW   SAVE AREA                      
+*
          LLGT  R8,WKLTBEGN        LOAD LOGIC  TABLE ADDRESS            
          USING LOGICTBL,R8                                             
 *
@@ -403,10 +518,6 @@ LT0990  EQU   *
          BRCT  R7,LTLOOP
          DROP  R8 LOGICTBL
 *
-         L     R2,WKEXIDCB
-         MVC   WKRENTWK(8),OPENPARM
-         CLOSE ((R2)),MODE=31,MF=(E,WKRENTWK)
-*
 *   Sort the table, leaving duplicates included
          LR    R4,R3
          LAY   R3,WKXTAB
@@ -449,14 +560,98 @@ BUBBLEX  EQU   *
          BR    R14                                                      
 *                                                                      
 ***********************************************************************
+***********************************************************************
 *  EXITRPT: REPORT OF GENERAERS EXTRACT PHASE USER EXITS FROM LIST    *
+*           R3=> current exit table entry                             *
 ***********************************************************************
 EXITRPT  DS    0H                                                      
          STM   R14,R12,12(R13)                                         
-         LA    R10,WKSVA2                                              
-         ST    R10,RSAFP(,R13)    SET   FORWARD  POINTER IN OLD        
-         ST    R13,RSABP(,R10)    SET   BACKWARD POINTER IN NEW        
-         LR    R13,R10            NEW   SAVE AREA                      
+         LA    R2,WKSVA2                                              
+         ST    R2,RSAFP(,R13)     SET   FORWARD  POINTER IN OLD        
+         ST    R13,RSABP(,R2)     SET   BACKWARD POINTER IN NEW        
+         LR    R13,R2             NEW   SAVE AREA                      
+*
+*********************************************************************** 
+* Process SB - Start session with a BLDL identifier - the issue RC    * 
+*********************************************************************** 
+         MVC   WKPGMNM(8),1(R3)               Get member name           
+         XC    WKMTOKEN,WKMTOKEN              Zero out MTOKEN           
+         L     R15,WKIEWBF
+         L     R2,WKLIBDCB
+*         CALL (15),(SB,WKMTOKEN,WKLIBDCB,WKPGMNM),VL,                *
+         CALL (15),(SB,WKMTOKEN,(R2),WKPGMNM),VL,                      *
+               MF=(E,WKPLIST)                 Call fast data            
+*
+         L     R15,WKIEWBF                                                 
+         CALL (15),(RC,WKMTOKEN,WKRETC,WKRSNC),VL,                     *
+               MF=(E,WKPLIST)                 Call fast data
+*
+         MVC   WKREC,SPACEX
+         MVC   WKREC(L'MSG_RC),MSG_RC         Build RC message
+         LAY   R15,FORMAT_HEX
+         CALL (15),(WKREC+4,WKRETC),                                   *
+               MF=(E,WKPLIST)                 format return
+         LAY   R15,FORMAT_HEX
+         CALL (15),(WKREC+17,WKRSNC),                                  *
+               MF=(E,WKPLIST)                 and reason codes
+*
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
+*
+***********************************************************************
+* Process GB - get B_IDRB (module) data                               *
+***********************************************************************
+IEWBIDB_BASE EQU R2                      Base register for BIDB buffer
+IDB_BASE     EQU R3                      Base register for BIDB entry
+         IEWBUFF FUNC=GETBUF,TYPE=IDRB   Get memory for BIDB buffer
+         IEWBUFF FUNC=INITBUF,TYPE=IDRB  Init IDB buffer
+         XC    WKCURSOR,WKCURSOR         Zero out cursor
+GB_LOOP  DS   0H
+         L     R15,WKIEWBF
+         CALL (15),(GD,WKMTOKEN,B_BIDB_VSTRING,0,(IEWBIDB_BASE),       *
+               WKCURSOR,WKCOUNT,0),VL,MF=(E,WKPLIST) Call fast data
+         ST    R15,WKRETC                  Save return
+         ST    R0,WKRSNCE                  and reason codes
+*
+         CLC   WKRETC,=F'4'
+         JNE   GB_BADRC                    We want only RETCODE=4
+         CLC   WKRSNC,=XL4'10800001'       and RSNCODE='10800001'X
+         JE    GB_OK                         (more data)
+         CLC   WKRSNC,=XL4'10800002'       or RSNCODE='10800002'X
+         JE    GB_OK                         (no more data)
+GB_BADRC DS   0H                           Other codes are invalid
+         MVC   WKREC,SPACEX
+         MVC   WKREC(L'MSG_RC),MSG_RC      Build RC message
+         LAY   R15,FORMAT_HEX
+         CALL (15),(WKREC+4,WKRETC),                                   *
+               MF=(E,WKPLIST)              format return
+         LAY   R15,FORMAT_HEX
+         CALL (15),(WKREC+17,WKRSNC),                                  *
+               MF=(E,WKPLIST)              and reason codes
+*
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
+         J     FREE_BIDB                   Free buffer and
+*                                          read the next command
+GB_OK    DS   0H
+         CLC   WKRSNC,=XL4'10800001'
+         JE    GB_LOOP                     If there are more entries
+*                                          call fast data again
+         MVC   WKREC,SPACEX
+         MVC   WKREC(L'MSG_RC),MSG_GB      Build RC message
+         MVC   WKREC+00(8),WKPGMNM                                     
+         MVC   WKREC+19(10),IDB_BINDER_ID                              
+         MVC   WKREC+36(2),IDB_VERSION                                 
+         MVC   WKREC+38(2),IDB_RELEASE                                 
+         MVC   WKREC+45(7),IDB_DATE_BOUND                              
+         MVC   WKREC+57(6),IDB_TIME_BOUND                              
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
+FREE_BIDB DS 0H                                                         
+         IEWBUFF FUNC=FREEBUF,TYPE=IDRB   Free IDT buffer.              
 *
 *
          L     R13,RSABP(,R13)    OLD   SAVE AREA                       
@@ -473,16 +668,69 @@ MVCR5R14 MVC   0(0,R5),0(R14)     * * * * E X E C U T E D * * * *
 *********************************************************************** 
          DS   0D                                                        
 MODE31   DS   0XL4                                                      
-OPENPARM DC    XL8'8000000000000000'                                    
-SPACEX   DC    CL256' '                                                 
-*                                                                       
-WORKEYEB DC    CL8'GVBXWINF'                                            
-*                                                                       
+OPENPARM DC    XL8'8000000000000000'
+*
+***********************************************************************
+* B_TEXT class name represented as vstring                            *
+***********************************************************************
+B_TEXT_VSTRING        DC H'6',C'B_TEXT'
+B_BIDB_VSTRING        DC H'6',C'B_IDRB'
+B_BIDL_VSTRING        DC H'6',C'B_IDRL'
+***********************************************************************
+* Fast data access request codes                                      *
+***********************************************************************
+SB       DC    C'SB',X'0001'                                              
+SJ       DC    C'SJ',X'0001'                                              
+SQ       DC    C'SQ',X'0001'                                              
+GC       DC    C'GC',X'0001'                                              
+GD       DC    C'GD',X'0001'                                              
+GE       DC    C'GE',X'0001'                                              
+GN       DC    C'GN',X'0001'                                              
+RC       DC    C'RC',X'0001'                                              
+EN       DC    C'EN',X'0001'                                              
+***********************************************************************
+* GN call types                                                       *
+***********************************************************************
+NTYPE_SECTIONS        DC C'S'                                          
+NTYPE_CLASSES         DC C'C'                                          
+***********************************************************************
+* Hexadecimal characters                                              *
+***********************************************************************
+HEXCHARS              DC C'0123456789ABCDEF'
+*
+WORKEYEB DC    CL8'GVBXWRPT'
+*
 EXIDCB   DCB   DSORG=PS,DDNAME=EXTRXRPT,MACRF=(PM),DCBE=EXIDCBE,       X
-               RECFM=FB,LRECL=80                                        
-EXIDCBE  DCBE  RMODE31=BUFF                                             
-EXIDCBL  EQU   *-EXIDCB                                                 
-*                                                                       
+               RECFM=FB,LRECL=125
+EXIDCBE  DCBE  RMODE31=BUFF
+EXIDCBL  EQU   *-EXIDCB
+*
+LIBDCB   DCB   DSORG=PO,DDNAME=EXTRXRPT,MACRF=R,DCBE=LIBDCBE,          X
+               RECFM=U
+LIBDCBE  DCBE  RMODE31=BUFF
+LIBDCBL  EQU   *-LIBDCB
+*
+*********************************************************************** 
+* Messages                                                            * 
+*********************************************************************** 
+MSG_STARTUP           DC C'Z/OS BINDER FAST DATA API DEMO'              
+MSG_SYSIN_FAILED      DC C'COULD NOT OPEN SYSIN'                        
+MSG_SYSLIB_FAILED     DC C'COULD NOT OPEN SYSLIB'                       
+MSG_INVALID_COMMAND   DC C'INVALID COMMAND'                             
+MSG_RC                DC C'RET=12345678 RSN=12345678'                   
+MSG_ALL_OK            DC C'ALL OK'                                      
+MSG_MTOKEN            DC C'MTOKEN=12345678'                             
+MSG_GE                DC C'ESD TYPE=12 NAME='                           
+MSG_ECHO_PREFIX       DC C'* '                                          
+MSG_CSVQUERY_FAILED   DC C'CSVQUERY FAILED'                             
+MSG_GN                DC C'NAME='                                       
+MSG_GC                DC C'MEMBER='                                     
+MSG_GI                DC C'X        BUILT BY: XXXXXXXXXX VERS: XXXX ON:+
+                XXXXXXX AT: XXXXXXXXX'                                  
+MSG_GD                DC C'B_TEXT DATA SIZE='                           
+MSG_GB                DC C'X        BOUND BY: XXXXXXXXXX VERS: XXXX ON:+
+                XXXXXXX AT: XXXXXX'                                     
+SPACEX   DC    CL256' '
          LTORG ,       
          DS   0F       
          DCBD  DSORG=PS
