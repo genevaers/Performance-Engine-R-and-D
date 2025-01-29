@@ -264,12 +264,14 @@ MAINLINE EQU   *
 *    LOAD FAST API for BINDER
 ***********************************************************************
 *
-         LOAD EP=IEWBFDAT                    Issue LOAD.              
-         ST R0,WKIEWBF                       Save entry point address
+         LOAD  EP=IEWBFDAT                   Issue LOAD.              
+         ST    R0,WKIEWBF                    Save entry point address
 *
 ***********************************************************************
 *    OBTAIN DCB's and OPEN SYSLIB and REPORT FILE
 ***********************************************************************
+*
+         wto 'opening syslib'
 *
          LA    R0,LIBDCBL
          GETMAIN RU,LV=(0),LOC=BELOW
@@ -291,6 +293,8 @@ MAINLINE EQU   *
 A0040    EQU    *
          DROP  R2 IHADCB
 *
+*
+         wto 'openeing extrpt'
 *
          LA    R0,EXIDCBL
          GETMAIN RU,LV=(0),LOC=BELOW
