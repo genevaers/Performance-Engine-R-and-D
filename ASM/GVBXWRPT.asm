@@ -260,7 +260,7 @@ MAINLINE EQU   *
 * 
          WTO 'GVBXWRPT TERMINATION PROCESSING'
 *
- ***********************************************************************
+***********************************************************************
 *    LOAD FAST API for BINDER
 ***********************************************************************
 *
@@ -317,6 +317,8 @@ A0042    EQU    *
 *    REFERENCE MAIN THREAD AND BUILD SORTED LIST OF USER EXITS
 ***********************************************************************
 *
+         wto 'DCBs open'
+*
          L     R1,GP_THRD_WA
          USING THRDAREA,R1
          L     R1,THRDMAIN
@@ -327,6 +329,7 @@ A0042    EQU    *
          L     R15,=A(EXITLST)
          BASR  R14,R15
 *
+         wto 'exit list read'
 ***********************************************************************
 *    PROCESS USER EXIT LIST TO PRODUCE REPORT (OMITTING DUPLICATES)
 ***********************************************************************
@@ -344,6 +347,7 @@ A0042    EQU    *
          J     A0890
 *
 RPTLOOP  EQU   *
+         wto 'once through the loop'
          CLC   WKBLASTE,0(R3)   Same as previous slot processed ?
          JE    RPTLP02          (won't be 1st time through)
          CLI   0(R3),C'W'       Write exit
