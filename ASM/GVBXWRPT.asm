@@ -91,7 +91,7 @@
 *                                                                     *
 *        R0  - TEMPORARY WORK    REGISTER                             *
 *                                                                     *
-************************************************************************
+***********************************************************************
 *
          COPY GVBX95PA
          GVBAUR35 DSECT=YES
@@ -119,12 +119,14 @@ WKAREA   DSECT
 WKSVA    DS  18F                  REGISTER   SAVE AREA
 WKSVA2   DS  18F                  REGISTER   SAVE AREA
 WKSVA3   DS  18F                  REGISTER   SAVE AREA
+WKRETC   DS    F
+WKRSNC   DS    F
 WKEXIDCB DS    A
 WKLIBDCB DS    A
 WKIEWBF  DS    A
 WKMTOKEN DS    F
 WKCURSOR DS    F                  Fast data cursor position. 
-WKCOUNT  DS    F                  Number of entries obtained.
+WKCOUNT  DS    F                  Number of entries obtained
 WKRENTWK DS    XL256
 WKREC    DS   0CL125
 WKRECTXT DS    CL13              'LOOKUP EXIT: '
@@ -136,7 +138,8 @@ WKLTCNT  DS    F
 WKNUMSLT DS    F
 WKEMINU1 DS    F                  One minus number slots (bubble sort)
 WKBLASTE DS    CL9                Last entry to process
-         DS    XL3
+WKSTAT1  DS    X
+         DS    XL2
 *
 WKPLIST  DS  32F  
 WKXTAB   DS 256XL9                256 user exit entries
@@ -469,7 +472,7 @@ LTLOOP   EQU   *
          MVC   WKRECTXT,=CL13'WRITE EXIT:  '
          MVC   WKRECXNM,LTWRNAME
          MVI   0(R3),C'W'      
-         MVC   1(8,R3),LTRWNAME
+         MVC   1(8,R3),LTWRNAME
          J     LT0900
 *
 LT0100   EQU   *
@@ -759,10 +762,29 @@ FREE_BIDL EQU  *
          LM    R14,R12,12(R13)
          BR    R14
 *
-*
+*********************************************************************** 
 MVCR5R14 MVC   0(0,R5),0(R14)     * * * * E X E C U T E D * * * *
 GI_MVC   MVC   WKREC+0(0),0(R15)           MVC template
-*                                                                       
+*
+*********************************************************************** 
+FORMAT_HEX DS 0H                                                       
+         STM   R14,R12,12(R3)     Save registers
+         L     R2,0(R1)           Put buffer address into register 2
+         L     R3,4(R1)
+         L     R3,0(R3)           Put a number into register 3
+         A     R2,=F'7'           Start filling buffer from the end
+         LHI   R4,8               Repeat 8 times (for each digit)
+HEXLOOP  EQU   *
+         LR    R5,R3              Copy number info register 5
+         N     R5,=XL4'0000000F'  Get the last digit
+         IC    R5,HEXCHARS(R5)    Get its EBCDIC counterpart
+         STC   R5,0(R2)           Put it into buffer
+         SRL   R3,4               Remove the last digit
+         S     R2,=F'1'           Move text buffer pointer
+         BCT   R4,HEXLOOP         Repeat
+         XR    R15,R15            Zero out return code
+         ST    R15,16(,R13)
+         LM    R14,R12,12(R13)
 *********************************************************************** 
 *                                                                     * 
 *        C O N S T A N T S                                            * 
