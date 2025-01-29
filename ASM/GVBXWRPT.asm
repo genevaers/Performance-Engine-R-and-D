@@ -465,6 +465,8 @@ EXITLST  DS    0H
          LLGT  R8,WKLTBEGN        LOAD LOGIC  TABLE ADDRESS
          USING LOGICTBL,R8
 *
+         wto 'logic table loop'
+*
          LAY   R3,WKXTAB
          LGF   R7,WKLTCNT         LOAD LOGIC  TABLE ENTRY COUNT
 LTLOOP   EQU   *
@@ -508,6 +510,8 @@ LT0900  EQU   *                   Write exit information
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
+*
+         wto 'once more through loop'
 *
 LT0990  EQU   *
          LGH   R0,LTROWLEN
