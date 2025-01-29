@@ -294,7 +294,7 @@ A0040    EQU    *
          DROP  R2 IHADCB
 *
 *
-         wto 'openeing extrpt'
+         wto 'opening extrpt'
 *
          LA    R0,EXIDCBL
          GETMAIN RU,LV=(0),LOC=BELOW
@@ -329,6 +329,8 @@ A0042    EQU    *
          MVC   WKLTBEGN,LTBEGIN
          MVC   WKLTCNT,LTCOUNT
          DROP  R1 THRDAREA
+*
+         wto 'logic table acquired'
 *
          L     R15,=A(EXITLST)
          BASR  R14,R15
