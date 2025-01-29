@@ -552,8 +552,6 @@ BUBBLEX  EQU   *
          LM    R14,R12,12(R13)                                          
          BR    R14                                                      
 *
-         DROP  R8 LOGICTBL
-*
 ***********************************************************************
 ***********************************************************************
 *  EXITRPT: REPORT OF GENERAERS EXTRACT PHASE USER EXITS FROM LIST    *
@@ -608,7 +606,7 @@ GB_LOOP  EQU   *
          CALL (15),(GD,WKMTOKEN,B_BIDB_VSTRING,0,(IEWBIDB_BASE),       *
                WKCURSOR,WKCOUNT,0),VL,MF=(E,WKPLIST) Call fast data
          ST    R15,WKRETC                  Save return
-         ST    R0,WKRSNCE                  and reason codes
+         ST    R0,WKRSNC                   and reason codes
 *
          CLC   WKRETC,=F'4'
          JNE   GB_BADRC                    We want only RETCODE=4
@@ -679,7 +677,7 @@ IDL_BASE     EQU R3                      Base register for BIDB entry
 GI_LOOP  EQU   *
          L     R15,WKIEWBF
          CALL (15),(GD,WKMTOKEN,B_BIDL_VSTRING,0,(IEWBIDL_BASE),       *
-               WKCURSOR,WKCOUNT,0),VL,MF=(E,PARMLIST) Call fast data
+               WKCURSOR,WKCOUNT,0),VL,MF=(E,WKPLIST) Call fast data
          ST    R15,WKRETC                  Save return
          ST    R0,WKRSNC                   and reason codes
 *
