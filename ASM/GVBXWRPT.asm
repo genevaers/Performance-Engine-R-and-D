@@ -1,4 +1,4 @@
-         TITLE 'GVBXWIN - SAMPLE WRITE EXIT: GATHER EXIT INFO'         
+         TITLE 'GVBXWRPT - SAMPLE WRITE EXIT: GATHER EXIT INFO'         
 ********************************************************************** 
 *                                                                      
 * (C) COPYRIGHT IBM CORPORATION 2025.                                  
@@ -99,15 +99,6 @@
          COPY GVBMR95W
          COPY GVBMR95L
 *
-***********************************************************************
-* Fast data mappings and buffer templates                             *
-***********************************************************************
-ESDBUF   IEWBUFF FUNC=MAPBUF,TYPE=ESD,VERSION=6,SIZE=8                 
-CUIBUF   IEWBUFF FUNC=MAPBUF,TYPE=CUI,VERSION=6,BYTES=40960            
-NAMBUF   IEWBUFF FUNC=MAPBUF,TYPE=NAME,VERSION=6,SIZE=8                
-TXTBUF   IEWBUFF FUNC=MAPBUF,TYPE=TEXT,VERSION=6,BYTES=2048            
-IDRBUF   IEWBUFF FUNC=MAPBUF,TYPE=IDRB,VERSION=6,BYTES=4072            
-IDLBUF   IEWBUFF FUNC=MAPBUF,TYPE=IDRL,VERSION=7,BYTES=40960           
 ***********************************************************************
 *                                                                     *
 *       "GVBXWRPT" - W O R K A R E A  D E F I N I T I O N             *
@@ -815,8 +806,17 @@ EN       DC    C'EN',X'0001'
 ***********************************************************************
 * GN call types                                                       *
 ***********************************************************************
-NTYPE_SECTIONS        DC C'S'                                          
-NTYPE_CLASSES         DC C'C'                                          
+NTYPE_SECTIONS        DC C'S'
+NTYPE_CLASSES         DC C'C'
+***********************************************************************
+* Fast data mappings and buffer templates                             *
+***********************************************************************
+ESDBUF   IEWBUFF FUNC=MAPBUF,TYPE=ESD,VERSION=6,SIZE=8                 
+CUIBUF   IEWBUFF FUNC=MAPBUF,TYPE=CUI,VERSION=6,BYTES=40960            
+NAMBUF   IEWBUFF FUNC=MAPBUF,TYPE=NAME,VERSION=6,SIZE=8                
+TXTBUF   IEWBUFF FUNC=MAPBUF,TYPE=TEXT,VERSION=6,BYTES=2048            
+IDRBUF   IEWBUFF FUNC=MAPBUF,TYPE=IDRB,VERSION=6,BYTES=4072            
+IDLBUF   IEWBUFF FUNC=MAPBUF,TYPE=IDRL,VERSION=7,BYTES=40960           
 ***********************************************************************
 * Hexadecimal characters                                              *
 ***********************************************************************
