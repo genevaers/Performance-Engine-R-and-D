@@ -312,10 +312,10 @@ A0040    EQU    *
          MVC   WKRENTWK(8),OPENPARM
          OPEN  ((R2),OUTPUT),MODE=31,MF=(E,WKRENTWK)
          TM    48(R2),X'10'
-         JO    A0040
+         JO    A0042
          MVC   WKRETC,=F'12'
          J     A0900
-A0040    EQU    *
+A0042    EQU    *
          DROP  R2 IHADCB
          MVC   WKREC,SPACEX
 *
@@ -366,13 +366,13 @@ RPT030   EQU   *
          JO    RPT060
          OI    WKSTAT1,X'01'
          MVC   WKREC,=C'Write exit(s):'
-         J     A0054
+         J     RPT054
 RPT040   EQU   *
          TM    WKSTAT1,X'02'
          JO    RPT060
          OI    WKSTAT1,X'02'
          MVC   WKREC,=C'Lookup exit(s):'
-         J     A0054
+         J     RPT054
 RPT050   EQU   *
          TM    WKSTAT1,X'04'
          JO    RPT060
@@ -551,7 +551,9 @@ BUBBLEX  EQU   *
          L     R13,RSABP(,R13)    OLD   SAVE AREA                       
          LM    R14,R12,12(R13)                                          
          BR    R14                                                      
-*                                                                      
+*
+         DROP  R8 LOGICTBL
+*
 ***********************************************************************
 ***********************************************************************
 *  EXITRPT: REPORT OF GENERAERS EXTRACT PHASE USER EXITS FROM LIST    *
@@ -733,7 +735,7 @@ IDL_ENTRY_LOOP EQU *
          JP    IDL_ENTRY_LOOP              - Loop back
 *
 GI_IDL_010 EQU *
-         CLC   RSNCODE,=XL4'10800001'      If more entries
+         CLC   WKRSNC,=XL4'10800001'       If more entries
          JE    GI_LOOP                     then
 *
 FREE_BIDL EQU  *
