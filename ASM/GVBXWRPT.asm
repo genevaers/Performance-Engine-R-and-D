@@ -122,8 +122,10 @@ WKRENTWK DS    XL256
 WKREC    DS   0CL125
 WKRECTXT DS    CL13              'LOOKUP EXIT: '
 WKRECXNM DS    CL8
-         DS    CL104
+WKRECRST DS    CL104
+         DS    XL7
 WKDBL    DS    D                  DOUBLEWORD WORK AREA
+         DS    D
 WKLTBEGN DS    A
 WKLTCNT  DS    F
 WKNUMSLT DS    F
@@ -799,19 +801,24 @@ GI_MVC   MVC   WKREC+0(0),0(R15)           MVC template
 FORMAT_HEX DS 0H                                                       
          STM   R14,R12,12(R13)    Save registers
 *
-         L     R2,0(R1)           Put buffer address into register 2
-         L     R3,4(R1)
-         L     R3,0(R3)           Put a number into register 3
-         A     R2,=F'7'           Start filling buffer from the end
-         LHI   R4,8               Repeat 8 times (for each digit)
-HEXLOOP  EQU   *
-         LR    R5,R3              Copy number info register 5
-         N     R5,=XL4'0000000F'  Get the last digit
-         IC    R5,HEXCHARS(R5)    Get its EBCDIC counterpart
-         STC   R5,0(R2)           Put it into buffer
-         SRL   R3,4               Remove the last digit
-         S     R2,=F'1'           Move text buffer pointer
-         BCT   R4,HEXLOOP         Repeat
+         LM    R2,R3,0(R1)        Arguments 1 and 2
+         UNPK  WKDBL(9),0(5,R3)
+         TR    WKDBL(8),HEXTAB
+         MVC   0(8,R2),WKDBL
+*
+*         L     R2,0(R1)           Put buffer address into register 2
+*         L     R3,4(R1)
+*         L     R3,0(R3)           Put a number into register 3
+*         A     R2,=F'7'           Start filling buffer from the end
+*         LHI   R4,8               Repeat 8 times (for each digit)
+*HEXLOOP  EQU   *
+*         LR    R5,R3              Copy number info register 5
+*         N     R5,=XL4'0000000F'  Get the last digit
+*         IC    R5,HEXCHARS(R5)    Get its EBCDIC counterpart
+*         STC   R5,0(R2)           Put it into buffer
+*         SRL   R3,4               Remove the last digit
+*         S     R2,=F'1'           Move text buffer pointer
+*         BCT   R4,HEXLOOP         Repeat
 *
          XR    R15,R15            Zero out return code
          ST    R15,16(,R13)
@@ -896,6 +903,11 @@ MSG_GD                DC C'B_TEXT DATA SIZE='
 MSG_GB                DC C'X        BOUND BY: XXXXXXXXXX VERS: XXXX ON:+
                 XXXXXXX AT: XXXXXX'                                     
 SPACEX   DC    CL256' '
+*
+HEXTAB   DS   0F
+         ORG   *+240
+         DC    CL16'0123456789ABCDEF'
+*
          LTORG ,       
          DS   0F       
          DCBD  DSORG=PS
