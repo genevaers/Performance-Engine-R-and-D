@@ -463,7 +463,6 @@ RETURNIN EQU   *                  RETURN INITIALIZATION
          DROP  R8                                                      
 *
 ***********************************************************************
-***********************************************************************
 *  EXITLST: GET LIST FOR REPORT OF GENERAERS EXTRACT PHASE USER EXITS *
 *           AND SORT LIST OF EXITS, LEAVING DUPLICATES IN LIST.       *
 ***********************************************************************
@@ -477,8 +476,6 @@ EXITLST  DS    0H
          LLGT  R8,WKLTBEGN        LOAD LOGIC  TABLE ADDRESS
          USING LOGICTBL,R8
 *
-         wto 'logic table loop'
-*
          LAY   R3,WKXTAB
          LGF   R7,WKLTCNT         LOAD LOGIC  TABLE ENTRY COUNT
 LTLOOP   EQU   *
@@ -487,8 +484,6 @@ LTLOOP   EQU   *
          CLC   LTWRNAME,SPACEX    EXIT SPECIFIED ???
          JE    LT0990             no, go
 *      WR_EX processin
-         MVC   WKRECTXT,=CL13'WRITE EXIT:  '
-         MVC   WKRECXNM,LTWRNAME
          MVI   0(R3),C'W'      
          MVC   1(8,R3),LTWRNAME
          J     LT0900
@@ -499,8 +494,6 @@ LT0100   EQU   *
          CLC   LTLUNAME,SPACEX    EXIT SPECIFIED ???
          JE    LT0990             no, go
 *      LU_EX processing
-         MVC   WKRECTXT,=CL13'LOOKUP EXIT: '
-         MVC   WKRECXNM,LTLUNAME
          MVI   0(R3),C'L'      
          MVC   1(8,R3),LTLUNAME
          J     LT0900
@@ -511,19 +504,11 @@ LT0200   EQU   *
          CLC   LTRENAME,SPACEX
          JE    LT0990
 *      RE_EX processing
-         MVC   WKRECTXT,=CL13'READ EXIT:   '
-         MVC   WKRECXNM,LTRENAME
          MVI   0(R3),C'R'      
          MVC   1(8,R3),LTRENAME
 *
 LT0900  EQU   *                   Write exit information
          LA    R3,9(,R3)          Next tab entry
-*
-         LA    R0,WKREC
-         L     R1,WKEXIDCB
-         PUT   (1),(0)
-*
-         wto 'once more through loop'
 *
 LT0990  EQU   *
          LGH   R0,LTROWLEN
@@ -531,9 +516,8 @@ LT0990  EQU   *
          BRCT  R7,LTLOOP
          DROP  R8 LOGICTBL
 *
-        wto 'sorting'
+*   Sort the table, leavingany duplicates included
 *
-*   Sort the table, leaving duplicates included
          LR    R4,R3
          LAY   R3,WKXTAB
          SR    R4,R3              R4 == LENGTH OF FILLED SLOTS
@@ -570,13 +554,10 @@ BUBBLE02 EQU   *
          JNZ   BUBBLELO           Yes, do it again
 BUBBLEX  EQU   *
 *
-         wto 'sorted'
-*
          L     R13,RSABP(,R13)    OLD   SAVE AREA                       
          LM    R14,R12,12(R13)                                          
          BR    R14                                                      
 *
-***********************************************************************
 ***********************************************************************
 *  EXITRPT: REPORT OF GENERAERS EXTRACT PHASE USER EXITS FROM LIST    *
 *           R3=> current exit table entry                             *
@@ -595,15 +576,20 @@ EXITRPT  DS    0H
          XC    WKMTOKEN,WKMTOKEN              Zero out MTOKEN           
          L     R15,WKIEWBF
          L     R2,WKLIBDCB
-*         CALL (15),(SB,WKMTOKEN,WKLIBDCB,WKPGMNM),VL,                *
          CALL (15),(SB,WKMTOKEN,(R2),WKPGMNM),VL,                      *
                MF=(E,WKPLIST)                 Call fast data API            
 *
+*   Call RC
          L     R15,WKIEWBF                                                 
          CALL (15),(RC,WKMTOKEN,WKRETC,WKRSNC),VL,                     *
                MF=(E,WKPLIST)                 Call fast data API
 *
-*   Call RC
+         CLC   WKRETC,XL4'00000000'
+         JNE   SB_001
+         CLC   WKRSNC,XL4'00000000'
+         JE    SB_002
+*
+SB_001   EQU   *
          MVC   WKREC,SPACEX
          MVC   WKREC(L'MSG_RC),MSG_RC         Build RC message
          LAY   R15,FORMAT_HEX
@@ -612,10 +598,13 @@ EXITRPT  DS    0H
          LAY   R15,FORMAT_HEX
          CALL (15),(WKREC+17,WKRSNC),                                  *
                MF=(E,WKPLIST)                 and reason codes
-*
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
+         MVC   WKRETC=F'8'
+         J     RPT0990
+*
+SB_002   EQU   *
          MVC   WKREC,SPACEX
 *
 ***********************************************************************
@@ -652,6 +641,7 @@ GB_BADRC EQU   *                           Other codes are invalid
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
+         MVC   WKRETC=F'8'
          MVC   WKREC,SPACEX
          J     FREE_BIDB                   Free buffer and
 *                                          read the next command
@@ -679,6 +669,11 @@ FREE_BIDB EQU  *
          CALL (15),(RC,WKMTOKEN,WKRETC,WKRSNC),VL,                     *
                MF=(E,WKPLIST)                 Call fast data API
 *
+         CLC   WKRETC,=F'4'
+         JNE   GB_001                      We want only RETCODE=4
+         CLC   WKRSNC,=XL4'10800002'       or RSNCODE='10800002'X
+         JE    GB_002                        (no more data)
+GB_001   EQU   *
          MVC   WKREC,SPACEX
          MVC   WKREC(L'MSG_RC),MSG_RC         Build RC message
          LAY   R15,FORMAT_HEX
@@ -691,7 +686,9 @@ FREE_BIDB EQU  *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
+         MVC   WKRETC=F'8'
          MVC   WKREC,SPACEX
+GB_002   EQU   *
 *
 ***********************************************************************
 * Process GI - get B_IDRL (csect) data                                *
@@ -789,6 +786,7 @@ FREE_BIDL EQU  *
          MVC   WKREC,SPACEX
 *
 *
+RPT0990  EQU   *
          L     R13,RSABP(,R13)    OLD   SAVE AREA
          LM    R14,R12,12(R13)
          BR    R14
@@ -797,6 +795,8 @@ FREE_BIDL EQU  *
 MVCR5R14 MVC   0(0,R5),0(R14)     * * * * E X E C U T E D * * * *
 GI_MVC   MVC   WKREC+0(0),0(R15)           MVC template
 *
+***********************************************************************
+* Format hex value                                                    *
 *********************************************************************** 
 FORMAT_HEX DS 0H                                                       
          STM   R14,R12,12(R13)    Save registers
@@ -806,22 +806,6 @@ FORMAT_HEX DS 0H
          TR    WKDBL(8),HEXTAB
          MVC   0(8,R2),WKDBL
 *
-*         L     R2,0(R1)           Put buffer address into register 2
-*         L     R3,4(R1)
-*         L     R3,0(R3)           Put a number into register 3
-*         A     R2,=F'7'           Start filling buffer from the end
-*         LHI   R4,8               Repeat 8 times (for each digit)
-*HEXLOOP  EQU   *
-*         LR    R5,R3              Copy number info register 5
-*         N     R5,=XL4'0000000F'  Get the last digit
-*         IC    R5,HEXCHARS(R5)    Get its EBCDIC counterpart
-*         STC   R5,0(R2)           Put it into buffer
-*         SRL   R3,4               Remove the last digit
-*         S     R2,=F'1'           Move text buffer pointer
-*         BCT   R4,HEXLOOP         Repeat
-*
-         XR    R15,R15            Zero out return code
-         ST    R15,16(,R13)
          LM    R14,R12,12(R13)
          BR    R14
 *********************************************************************** 
