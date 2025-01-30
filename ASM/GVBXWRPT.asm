@@ -340,9 +340,9 @@ A0042    EQU    *
 *    PROCESS USER EXIT LIST TO PRODUCE REPORT (OMITTING DUPLICATES)
 ***********************************************************************
 *
-         L     R1,WKNUMSLT        Number slots including duplicates
+         L     R2,WKNUMSLT        Number slots including duplicates
          LAY   R3,WKXTAB         => first slot
-         LTR   R1,R1
+         LTR   R2,R2
          JP    RPTLOOP
          MVC   WKREC,=C'No user exits found'
          LA    R0,WKREC
@@ -397,7 +397,7 @@ RPT060   EQU   *
 RPTLP02  EQU   *
          MVC   WKBLASTE,0(R3)    Keep last entry processed for ref
          LA    R3,9(,R3) 
-         BRCT  R1,RPTLOOP
+         BRCT  R2,RPTLOOP
 *
 ***********************************************************************
 *    CLOSE REPORT AND SYSLIB FILES
