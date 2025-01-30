@@ -519,6 +519,8 @@ LT0990  EQU   *
          BRCT  R7,LTLOOP
          DROP  R8 LOGICTBL
 *
+        wto 'sorting'
+*
 *   Sort the table, leaving duplicates included
          LR    R4,R3
          LAY   R3,WKXTAB
@@ -550,11 +552,15 @@ BUBBLE02 EQU   *
          LA    R3,9(,R3)          NEXT SLOT
          BRCT  R1,BUBBLELP
 *
+         wto 'one sort iteration'
+*
          L     R1,WKEMINU1        Number slots minus one
          LAY   R3,WKXTAB
          LTR   R0,R0              Any swaps ?
          JNZ   BUBBLELO           Yes, do it again
 BUBBLEX  EQU   *
+*
+         wto 'sorted'
 *
          L     R13,RSABP(,R13)    OLD   SAVE AREA                       
          LM    R14,R12,12(R13)                                          
