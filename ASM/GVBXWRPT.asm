@@ -584,9 +584,9 @@ EXITRPT  DS    0H
          CALL (15),(RC,WKMTOKEN,WKRETC,WKRSNC),VL,                     *
                MF=(E,WKPLIST)                 Call fast data API
 *
-         CLC   WKRETC,XL4'00000000'
+         CLC   WKRETC,=XL4'00000000'
          JNE   SB_001
-         CLC   WKRSNC,XL4'00000000'
+         CLC   WKRSNC,=XL4'00000000'
          JE    SB_002
 *
 SB_001   EQU   *
@@ -601,7 +601,7 @@ SB_001   EQU   *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-         MVC   WKRETC=F'8'
+         MVC   WKRETC,=F'8'
          J     RPT0990
 *
 SB_002   EQU   *
@@ -641,7 +641,7 @@ GB_BADRC EQU   *                           Other codes are invalid
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-         MVC   WKRETC=F'8'
+         MVC   WKRETC,=F'8'
          MVC   WKREC,SPACEX
          J     FREE_BIDB                   Free buffer and
 *                                          read the next command
@@ -686,7 +686,7 @@ GB_001   EQU   *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-         MVC   WKRETC=F'8'
+         MVC   WKRETC,=F'8'
          MVC   WKREC,SPACEX
 GB_002   EQU   *
 *
