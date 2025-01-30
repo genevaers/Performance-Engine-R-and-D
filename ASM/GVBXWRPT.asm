@@ -370,29 +370,33 @@ RPT030   EQU   *
          TM    WKSTAT1,X'01'
          JO    RPT060
          OI    WKSTAT1,X'01'
-         MVC   WKREC,=C'Write exit(s):'
+         MVC   WKREC(4),=C'Write exit(s):'
          J     RPT054
 RPT040   EQU   *
          TM    WKSTAT1,X'02'
          JO    RPT060
          OI    WKSTAT1,X'02'
-         MVC   WKREC,=C'Lookup exit(s):'
+         MVC   WKREC(15),=C'Lookup exit(s):'
          J     RPT054
 RPT050   EQU   *
          TM    WKSTAT1,X'04'
          JO    RPT060
          OI    WKSTAT1,X'04'
-         MVC   WKREC,=C'Read exit(s):'
+         MVC   WKREC(13),=C'Read exit(s):'
 RPT054   EQU   *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKREC,SPACEX
 *
+         wto 'calling EXITRPT'
+*
 *   call routine with R3 => desired slot
 RPT060   EQU   *
          L     R15,=A(EXITRPT)
          BASR  R14,R15
+*
+         wto 'back from EXITRPT'
 *
 RPTLP02  EQU   *
          MVC   WKBLASTE,0(R3)    Keep last entry processed for ref
@@ -782,6 +786,9 @@ GI_MVC   MVC   WKREC+0(0),0(R15)           MVC template
 *********************************************************************** 
 FORMAT_HEX DS 0H                                                       
          STM   R14,R12,12(R3)     Save registers
+*
+         wto 'format_hex'
+*
          L     R2,0(R1)           Put buffer address into register 2
          L     R3,4(R1)
          L     R3,0(R3)           Put a number into register 3
@@ -795,6 +802,9 @@ HEXLOOP  EQU   *
          SRL   R3,4               Remove the last digit
          S     R2,=F'1'           Move text buffer pointer
          BCT   R4,HEXLOOP         Repeat
+*
+         wto 'format_end'
+*
          XR    R15,R15            Zero out return code
          ST    R15,16(,R13)
          LM    R14,R12,12(R13)
