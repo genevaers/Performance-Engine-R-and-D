@@ -552,8 +552,6 @@ BUBBLE02 EQU   *
          LA    R3,9(,R3)          NEXT SLOT
          BRCT  R1,BUBBLELP
 *
-         wto 'one sort iteration'
-*
          L     R1,WKEMINU1        Number slots minus one
          LAY   R3,WKXTAB
          LTR   R0,R0              Any swaps ?
