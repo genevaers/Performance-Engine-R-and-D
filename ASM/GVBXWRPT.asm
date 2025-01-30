@@ -785,7 +785,7 @@ GI_MVC   MVC   WKREC+0(0),0(R15)           MVC template
 *
 *********************************************************************** 
 FORMAT_HEX DS 0H                                                       
-         STM   R14,R12,12(R3)     Save registers
+         STM   R14,R12,12(R13)    Save registers
 *
          wto 'format_hex'
 *
