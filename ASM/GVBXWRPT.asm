@@ -401,6 +401,12 @@ RPT054   EQU   *
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKREC,SPACEX
+         MVC   WKREC,=C'Module             Component        VRL      DaX
+               te        Time'
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
+         MVC   WKREC,SPACEX
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
@@ -654,12 +660,19 @@ GB_OK    EQU   *
 *                                          call fast data again
          MVC   WKREC,SPACEX
          MVC   WKREC(L'MSG_RC),MSG_GB      Build GB message
-         MVC   WKREC+00(8),WKPGMNM                                     
-         MVC   WKREC+19(10),IDB_BINDER_ID                              
-         MVC   WKREC+36(2),IDB_VERSION                                 
-         MVC   WKREC+38(2),IDB_RELEASE                                 
-         MVC   WKREC+45(7),IDB_DATE_BOUND                              
-         MVC   WKREC+57(6),IDB_TIME_BOUND                              
+         MVC   WKREC+00(8),WKPGMNM
+         MVC   WKREC+19(10),IDB_BINDER_ID
+         MVC   WKREC+36(2),IDB_VERSION
+         MVI   WKREC+38,C'.'
+         MVC   WKREC+39(2),IDB_RELEASE
+         MVC   WKREC+46(4),IDB_DATE_BOUND
+         MVI   WKREC+50,C'.'
+         MVC   WKREC+51(3),IDB_DATE_BOUND+4
+         MVC   WKREC+57(2),IDB_TIME_BOUND
+         MVI   WKREC+59,C':'
+         MVC   WKREC+60(2),IDB_TIME_BOUND+2
+         MVI   WKREC+62,C':'
+         MVC   WKREC+63(6),IDB_TIME_BOUND+4
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
@@ -741,9 +754,12 @@ IDL_ENTRY_LOOP EQU *
          EX    R14,GI_MVC
          MVC   WKREC+19(10),IDL_PID_ID
          MVC   WKREC+36(2),IDL_VERSION
-         MVC   WKREC+38(2),IDL_MOD_LEVEL
-         MVC   WKREC+45(7),IDL_DATE_PROCESSED
-         MVC   WKREC+57(9),IDL_TIME_PROCESSED
+         MVI   WKREC+38,C'.'
+         MVC   WKREC+39(2),IDL_MOD_LEVEL
+         MVC   WKREC+46(4),IDL_DATE_PROCESSED
+         MVI   WKREC+50,C'.'
+         MVC   WKREC+51(3),IDL_DATE_PROCESSED+4
+*         MVC   WKREC+57(9),IDL_TIME_PROCESSED
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)                     Print GD message
