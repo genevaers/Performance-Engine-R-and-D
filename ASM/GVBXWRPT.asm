@@ -359,8 +359,8 @@ RPTLOOP  EQU   *
 *
          MVC   WKREC,SPACEX
          MVC   WKREC(38),=C'Exit type: X not recognized (XXXXXXXX)'
-         WK    WKREC+11(2),0(R3)
-         WK    WKREC+29(8),1(R3)
+         WK    WKREC(2)+11,0(R3)
+         WK    WKREC(8)+29,1(R3)
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
