@@ -401,8 +401,14 @@ RPT054   EQU   *
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKREC,SPACEX
-         MVC   WKREC,=C'Module             Component        VRL      DaX
-               te        Time'
+         MVC   WKREC,=C'Module             Component        VRL       DX
+               ate       Time'
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
+         MVC   WKREC,SPACEX
+         MVC   WKREC,=C'--------           ----------       -----     -X
+               ------    --------' 
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
