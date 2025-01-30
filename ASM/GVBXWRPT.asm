@@ -155,21 +155,21 @@ WKLENGTH EQU   *-WKAREA
 *                                                                     *
 ***********************************************************************
 *                                                                      
-RSABP    EQU   4                                                       
-RSAFP    EQU   8                                                       
-RSA14    EQU   12                                                      
-RSA15    EQU   16                                                      
-RSA0     EQU   20                                                      
-RSA1     EQU   24                                                      
-RSA2     EQU   28                                                      
-*                                                                      
-GVBXWRPT RMODE ANY                                                     
-GVBXWRPT AMODE 31                                                      
-GVBXWRPT CSECT                                                         
-         J     CODE                                                    
-XWRPTEYE GVBEYE GVBXWRPT                                               
-*                                                                      
-CODE     STM   R14,R12,RSA14(R13) SAVE  CALLER'S  REGISTERS            
+RSABP    EQU   4
+RSAFP    EQU   8
+RSA14    EQU   12
+RSA15    EQU   16
+RSA0     EQU   20
+RSA1     EQU   24
+RSA2     EQU   28
+*
+GVBXWRPT RMODE ANY
+GVBXWRPT AMODE 31
+GVBXWRPT CSECT
+         J     CODE
+XWRPTEYE GVBEYE GVBXWRPT
+*
+CODE     STM   R14,R12,RSA14(R13) SAVE  CALLER'S  REGISTERS
 *
          LA    R10,0(,R15)        SET   PROGRAM   BASE    REGISTER
          LA    R11,4095(,R10)     SET   PROGRAM   BASE    REGISTER
@@ -264,8 +264,6 @@ MAINLINE EQU   *
          TM    WKSTAT1,X'80'
          JO    RETURN0
 * 
-         WTO 'GVBXWRPT TERMINATION PROCESSING'
-*
 ***********************************************************************
 *    LOAD FAST API for BINDER
 ***********************************************************************
@@ -276,8 +274,6 @@ MAINLINE EQU   *
 ***********************************************************************
 *    OBTAIN DCB's and OPEN SYSLIB and REPORT FILE
 ***********************************************************************
-*
-         wto 'opening syslib'
 *
          LA    R0,LIBDCBL
          GETMAIN RU,LV=(0),LOC=BELOW
@@ -300,8 +296,6 @@ A0040    EQU    *
          DROP  R2 IHADCB
 *
 *
-         wto 'opening extrpt'
-*
          LA    R0,EXIDCBL
          GETMAIN RU,LV=(0),LOC=BELOW
          ST    R1,WKEXIDCB
@@ -321,13 +315,10 @@ A0040    EQU    *
          J     A0900
 A0042    EQU    *
          DROP  R2 IHADCB
-         MVC   WKREC,SPACEX
 *
 ***********************************************************************
 *    REFERENCE MAIN THREAD AND BUILD SORTED LIST OF USER EXITS
 ***********************************************************************
-*
-         wto 'DCBs open'
 *
          L     R1,GP_THRD_WA
          USING THRDAREA,R1
@@ -336,21 +327,19 @@ A0042    EQU    *
          MVC   WKLTCNT,LTCOUNT
          DROP  R1 THRDAREA
 *
-         wto 'logic table acquired'
-*
          L     R15,=A(EXITLST)
          BASR  R14,R15
 *
-         wto 'exit list read'
 ***********************************************************************
 *    PROCESS USER EXIT LIST TO PRODUCE REPORT (OMITTING DUPLICATES)
 ***********************************************************************
 *
-         MVC   WKREC,SPACEX
          L     R2,WKNUMSLT        Number slots including duplicates
          LAY   R3,WKXTAB         => first slot
          LTR   R2,R2
          JP    RPTLOOP
+*
+         MVC   WKREC,SPACEX
          MVC   WKREC,=C'No user exits found'
          LA    R0,WKREC
          L     R1,WKEXIDCB
@@ -359,8 +348,6 @@ A0042    EQU    *
          J     A0890
 *
 RPTLOOP  EQU   *
-         wto 'once through the loop'
-*
          CLC   WKBLASTE,0(R3)   Same as previous slot processed ?
          JE    RPTLP02          (won't be 1st time through)
          CLI   0(R3),C'W'       Write exit
@@ -369,40 +356,59 @@ RPTLOOP  EQU   *
          JE    RPT040
          CLI   0(R3),C'R'       Read exit
          JE    RPT050
-         WTO   'Exit type not recognized'
+*
+         MVC   WKREC,SPACEX
+         MVC   WKREC(38),=C'Exit type: X not recognized (XXXXXXXX)'
+         WK    WKREC+11(2),0(R3)
+         WK    WKREC+29(8),1(R3)
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
          MVC   WKRETC,=F'16'
          J     A0890
+*
 RPT030   EQU   *
          TM    WKSTAT1,X'01'
          JO    RPT060
          OI    WKSTAT1,X'01'
+         MVC   WKREC,SPACEX
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
          MVC   WKREC(14),=C'Write exit(s):'
          J     RPT054
 RPT040   EQU   *
          TM    WKSTAT1,X'02'
          JO    RPT060
          OI    WKSTAT1,X'02'
+         MVC   WKREC,SPACEX
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
          MVC   WKREC(15),=C'Lookup exit(s):'
          J     RPT054
 RPT050   EQU   *
          TM    WKSTAT1,X'04'
          JO    RPT060
          OI    WKSTAT1,X'04'
+         MVC   WKREC,SPACEX
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
          MVC   WKREC(13),=C'Read exit(s):'
 RPT054   EQU   *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKREC,SPACEX
-*
-         wto 'calling EXITRPT'
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)
 *
 *   call routine with R3 => desired slot
 RPT060   EQU   *
          L     R15,=A(EXITRPT)
          BASR  R14,R15
-*
-         wto 'back from EXITRPT'
 *
 RPTLP02  EQU   *
          MVC   WKBLASTE,0(R3)    Keep last entry processed for ref
@@ -602,11 +608,9 @@ SB_001   EQU   *
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKRETC,=F'8'
-         J     RPT0990
+         J     GI_090
 *
 SB_002   EQU   *
-         MVC   WKREC,SPACEX
-*
 ***********************************************************************
 * Process GB - get B_IDRB (module) data                               *
 ***********************************************************************
@@ -642,7 +646,6 @@ GB_BADRC EQU   *                           Other codes are invalid
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKRETC,=F'8'
-         MVC   WKREC,SPACEX
          J     FREE_BIDB                   Free buffer and
 *                                          read the next command
 GB_OK    EQU   *
@@ -660,7 +663,6 @@ GB_OK    EQU   *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-         MVC   WKREC,SPACEX
 FREE_BIDB EQU  *                                                         
          IEWBUFF FUNC=FREEBUF,TYPE=IDRB    Free IDT buffer.              
 *
@@ -687,9 +689,8 @@ GB_001   EQU   *
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKRETC,=F'8'
-         MVC   WKREC,SPACEX
-GB_002   EQU   *
 *
+GB_002   EQU   *
 ***********************************************************************
 * Process GI - get B_IDRL (csect) data                                *
 ***********************************************************************
@@ -725,11 +726,9 @@ GI_BADRC EQU   *                           Other codes are invalid
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-         MVC   WKREC,SPACEX
          J     FREE_BIDL                   Free buffer
 *
 GI_OK    EQU   *
-* *      dc h'0'
          L     R5,IDLH_ENTRY_COUNT
 IDL_ENTRY_LOOP EQU *
          CLC   IDL_PID_ID(4),=XL4'00000000'
@@ -757,7 +756,6 @@ IDL_ENTRY_LOOP EQU *
          JNL   GI_IDL_010                  - Exit loop
          LTR   R5,R5                       More to go
          JP    IDL_ENTRY_LOOP              - Loop back
-         MVC   WKREC,SPACEX
 *
 GI_IDL_010 EQU *
          CLC   WKRSNC,=XL4'10800001'       If more entries
@@ -771,6 +769,11 @@ FREE_BIDL EQU  *
          CALL (15),(RC,WKMTOKEN,WKRETC,WKRSNC),VL,                     *
                MF=(E,WKPLIST)                 Call fast data API
 *
+         CLC   WKRETC,=F'4'
+         JNE   GI_001                      We want only RETCODE=4
+         CLC   WKRSNC,=XL4'10800002'       or RSNCODE='10800002'X
+         JE    GI_002                        (no more data)
+GI_001   EQU   *
          MVC   WKREC,SPACEX
          MVC   WKREC(L'MSG_RC),MSG_RC         Build RC message
          LAY   R15,FORMAT_HEX
@@ -783,10 +786,10 @@ FREE_BIDL EQU  *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-         MVC   WKREC,SPACEX
+GI_002   EQU   *
 *
 *
-RPT0990  EQU   *
+GI_090   EQU   *
          L     R13,RSABP(,R13)    OLD   SAVE AREA
          LM    R14,R12,12(R13)
          BR    R14
