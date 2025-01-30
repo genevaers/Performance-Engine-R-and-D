@@ -614,6 +614,7 @@ EXITRPT  DS    0H
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
+         MVC   WKREC,SPACEX
 *
 ***********************************************************************
 * Process GB - get B_IDRB (module) data                               *
@@ -649,6 +650,7 @@ GB_BADRC EQU   *                           Other codes are invalid
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
+         MVC   WKREC,SPACEX
          J     FREE_BIDB                   Free buffer and
 *                                          read the next command
 GB_OK    EQU   *
@@ -666,6 +668,7 @@ GB_OK    EQU   *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
+         MVC   WKREC,SPACEX
 FREE_BIDB EQU  *                                                         
          IEWBUFF FUNC=FREEBUF,TYPE=IDRB    Free IDT buffer.              
 *
@@ -686,6 +689,7 @@ FREE_BIDB EQU  *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
+         MVC   WKREC,SPACEX
 *
 ***********************************************************************
 * Process GI - get B_IDRL (csect) data                                *
@@ -722,6 +726,7 @@ GI_BADRC EQU   *                           Other codes are invalid
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
+         MVC   WKREC,SPACEX
          J     FREE_BIDL                   Free buffer
 *
 GI_OK    EQU   *
@@ -753,6 +758,7 @@ IDL_ENTRY_LOOP EQU *
          JNL   GI_IDL_010                  - Exit loop
          LTR   R5,R5                       More to go
          JP    IDL_ENTRY_LOOP              - Loop back
+         MVC   WKREC,SPACEX
 *
 GI_IDL_010 EQU *
          CLC   WKRSNC,=XL4'10800001'       If more entries
@@ -778,6 +784,7 @@ FREE_BIDL EQU  *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
+         MVC   WKREC,SPACEX
 *
 *
          L     R13,RSABP(,R13)    OLD   SAVE AREA
