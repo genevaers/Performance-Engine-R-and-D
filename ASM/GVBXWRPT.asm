@@ -531,7 +531,7 @@ LT0990  EQU   *
          ST    R1,WKNUMSLT
          C     R1,=F'1'           More than one entry ?
          JNH   BUBBLEX            No, don't do anything
-         BCTR  R1,1               ONE LESS THAN NUMBER OF ENTRIES
+         BCTR  R1,0               ONE LESS THAN NUMBER OF ENTRIES
          ST    R1,WKEMINU1        KEEP THIS !!
          LAY   R3,WKXTAB
 *
