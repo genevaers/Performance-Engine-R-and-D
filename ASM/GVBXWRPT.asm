@@ -787,8 +787,6 @@ GI_MVC   MVC   WKREC+0(0),0(R15)           MVC template
 FORMAT_HEX DS 0H                                                       
          STM   R14,R12,12(R13)    Save registers
 *
-         wto 'format_hex'
-*
          L     R2,0(R1)           Put buffer address into register 2
          L     R3,4(R1)
          L     R3,0(R3)           Put a number into register 3
@@ -802,8 +800,6 @@ HEXLOOP  EQU   *
          SRL   R3,4               Remove the last digit
          S     R2,=F'1'           Move text buffer pointer
          BCT   R4,HEXLOOP         Repeat
-*
-         wto 'format_end'
 *
          XR    R15,R15            Zero out return code
          ST    R15,16(,R13)
