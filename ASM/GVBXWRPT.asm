@@ -130,7 +130,8 @@ WKNUMSLT DS    F
 WKEMINU1 DS    F                  One minus number slots (bubble sort)
 WKBLASTE DS    CL9                Last entry to process
 WKSTAT1  DS    X
-         DS    XL2
+WKSTAT2  DS    X
+         DS    X
 *
 WKPLIST  DS  32F  
 WKXTAB   DS 256XL9                256 user exit entries
@@ -257,6 +258,9 @@ MAINLINE EQU   *
 *
          CLC   GPTHRDNO,=H'1'
          JNE   RETURN0
+*
+         TM    WKSTAT1,X'80'
+         JO    RETURN0
 * 
          WTO 'GVBXWRPT TERMINATION PROCESSING'
 *
@@ -340,6 +344,7 @@ A0042    EQU    *
 *    PROCESS USER EXIT LIST TO PRODUCE REPORT (OMITTING DUPLICATES)
 ***********************************************************************
 *
+         MVC   WKREC,SPACEX
          L     R2,WKNUMSLT        Number slots including duplicates
          LAY   R3,WKXTAB         => first slot
          LTR   R2,R2
@@ -348,7 +353,6 @@ A0042    EQU    *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-         MVC   WKREC,SPACEX
          MVC   WKRETC,=F'4'
          J     A0890
 *
@@ -403,6 +407,7 @@ RPTLP02  EQU   *
          LA    R3,9(,R3) 
          BRCT  R2,RPTLOOP
 *
+         OI    WKSTAT1,X'80'     Indicates report completed
 ***********************************************************************
 *    CLOSE REPORT AND SYSLIB FILES
 ***********************************************************************
