@@ -374,7 +374,7 @@ RPT030   EQU   *
          TM    WKSTAT1,X'01'
          JO    RPT060
          OI    WKSTAT1,X'01'
-         MVC   WKREC(4),=C'Write exit(s):'
+         MVC   WKREC(14),=C'Write exit(s):'
          J     RPT054
 RPT040   EQU   *
          TM    WKSTAT1,X'02'
