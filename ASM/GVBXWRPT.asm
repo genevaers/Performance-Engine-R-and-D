@@ -354,6 +354,7 @@ A0042    EQU    *
 *
 RPTLOOP  EQU   *
          wto 'once through the loop'
+*
          CLC   WKBLASTE,0(R3)   Same as previous slot processed ?
          JE    RPTLP02          (won't be 1st time through)
          CLI   0(R3),C'W'       Write exit
@@ -797,6 +798,7 @@ HEXLOOP  EQU   *
          XR    R15,R15            Zero out return code
          ST    R15,16(,R13)
          LM    R14,R12,12(R13)
+         BR    R14
 *********************************************************************** 
 *                                                                     * 
 *        C O N S T A N T S                                            * 
