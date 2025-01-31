@@ -401,13 +401,13 @@ RPT054   EQU   *
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKREC,SPACEX
-         MVC   WKREC(66),=C'Module             Component        VRL    X
-                  Date       Time        Size'
+         MVC   WKREC(72),=C'Module             Component        VRL    X
+                  Date       Time        Size    '
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKREC,SPACEX
-         MVC   WKREC(66),=C'--------           ----------       -----  X
+         MVC   WKREC(72),=C'--------           ----------       -----  X
                   -------    ----------  --------' 
          LA    R0,WKREC
          L     R1,WKEXIDCB
