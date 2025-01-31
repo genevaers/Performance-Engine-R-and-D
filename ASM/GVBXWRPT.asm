@@ -751,7 +751,7 @@ GI_BADRC EQU   *                           Other codes are invalid
          J     FREE_BIDL                   Free buffer
 *
 GI_OK    EQU   *
-         L     R5,COUNT
+         L     R5,WKCOUNT
 IDL_ENTRY_LOOP EQU *
          CLC   IDL_PID_ID(4),=XL4'00000000'
          JE    GI_IDL_010
