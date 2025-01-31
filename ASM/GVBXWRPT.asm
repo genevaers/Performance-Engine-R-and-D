@@ -769,12 +769,9 @@ IDL_ENTRY_LOOP EQU *
          MVI   WKREC+50,C'.'
          MVC   WKREC+51(3),IDL_DATE_PROCESSED+4
          MVC   WKREC+57(9),IDL_TIME_PROCESSED
-         LAY   R15,FORMAT_HEX
-         CALL (15),(WKREC+68,WKCOUNT),                                 *
-               MF=(E,WKPLIST)              format csect size
          LA    R0,WKREC
          L     R1,WKEXIDCB
-         PUT   (1),(0)                     Print GD message
+         PUT   (1),(0)                     Print GI message
 *
          A     R3,IDLH_ENTRY_LENG        ->Next entry
          BRCT R5,IDL_ENTRY_LOOP            Loop back
@@ -783,7 +780,7 @@ GI_IDL_010 EQU *
          MVC   WKREC,SPACEX
          LA    R0,WKREC
          L     R1,WKEXIDCB
-         PUT   (1),(0)                     Print GD message
+         PUT   (1),(0)
 *
          CLC   WKRSNC,=XL4'10800001'       If more entries
          JE    GI_LOOP                     then
