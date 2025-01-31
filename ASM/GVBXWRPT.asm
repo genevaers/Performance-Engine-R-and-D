@@ -681,7 +681,7 @@ GB_OK    EQU   *
          MVC   WKREC+63(2),IDB_TIME_BOUND+4
          LAY   R15,FORMAT_HEX
          CALL (15),(WKREC+68,IDB_MODULE_SIZE),                         *
-               MF=(E,WKPLIST)              format return
+               MF=(E,WKPLIST)              format module size
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
@@ -769,6 +769,9 @@ IDL_ENTRY_LOOP EQU *
          MVI   WKREC+50,C'.'
          MVC   WKREC+51(3),IDL_DATE_PROCESSED+4
 *         MVC   WKREC+57(9),IDL_TIME_PROCESSED
+         LAY   R15,FORMAT_HEX
+         CALL (15),(WKREC+68,WKCOUNT),                                 *
+               MF=(E,WKPLIST)              format csect size
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)                     Print GD message
