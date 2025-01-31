@@ -778,12 +778,13 @@ IDL_ENTRY_LOOP EQU *
          JNL   GI_IDL_010                  - Exit loop
          LTR   R5,R5                       More to go
          JP    IDL_ENTRY_LOOP              - Loop back
+*
+GI_IDL_010 EQU *
          MVC   WKREC,SPACEX
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)                     Print GD message
 *
-GI_IDL_010 EQU *
          CLC   WKRSNC,=XL4'10800001'       If more entries
          JE    GI_LOOP                     then
 *
