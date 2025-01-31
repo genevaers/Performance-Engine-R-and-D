@@ -401,14 +401,14 @@ RPT054   EQU   *
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKREC,SPACEX
-         MVC   WKREC(61),=C'Module             Component        VRL    X
-                  Date       Time'
+         MVC   WKREC(66),=C'Module             Component        VRL    X
+                  Date       Time        Size'
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKREC,SPACEX
-         MVC   WKREC(67),=C'--------           ----------       -----  X
-                  -------    ----------' 
+         MVC   WKREC(66),=C'--------           ----------       -----  X
+                  -------    ----------  --------' 
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
@@ -678,7 +678,10 @@ GB_OK    EQU   *
          MVI   WKREC+59,C':'
          MVC   WKREC+60(2),IDB_TIME_BOUND+2
          MVI   WKREC+62,C':'
-         MVC   WKREC+63(6),IDB_TIME_BOUND+4
+         MVC   WKREC+63(2),IDB_TIME_BOUND+4
+         LAY   R15,FORMAT_HEX
+         CALL (15),(WKREC+68,IDB_MODULE_SIZE),                         *
+               MF=(E,WKPLIST)              format return
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
