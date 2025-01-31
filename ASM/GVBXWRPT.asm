@@ -401,14 +401,14 @@ RPT054   EQU   *
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKREC,SPACEX
-         MVC   WKREC,=C'Module             Component        VRL       DX
-               ate       Time'
+         MVC   WKREC(61),=C'Module             Component        VRL    X
+                  Date       Time'
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
          MVC   WKREC,SPACEX
-         MVC   WKREC,=C'--------           ----------       -----     -X
-               ------    --------' 
+         MVC   WKREC(67),=C'--------           ----------       -----  X
+                  -------    ----------' 
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
@@ -778,6 +778,10 @@ IDL_ENTRY_LOOP EQU *
          JNL   GI_IDL_010                  - Exit loop
          LTR   R5,R5                       More to go
          JP    IDL_ENTRY_LOOP              - Loop back
+         MVC   WKREC,SPACEX
+         LA    R0,WKREC
+         L     R1,WKEXIDCB
+         PUT   (1),(0)                     Print GD message
 *
 GI_IDL_010 EQU *
          CLC   WKRSNC,=XL4'10800001'       If more entries
