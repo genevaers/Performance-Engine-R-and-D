@@ -751,7 +751,7 @@ GI_BADRC EQU   *                           Other codes are invalid
          J     FREE_BIDL                   Free buffer
 *
 GI_OK    EQU   *
-         L     R5,IDLH_ENTRY_COUNT
+         L     R5,COUNT
 IDL_ENTRY_LOOP EQU *
          CLC   IDL_PID_ID(4),=XL4'00000000'
          JE    GI_IDL_010
@@ -768,7 +768,7 @@ IDL_ENTRY_LOOP EQU *
          MVC   WKREC+46(4),IDL_DATE_PROCESSED
          MVI   WKREC+50,C'.'
          MVC   WKREC+51(3),IDL_DATE_PROCESSED+4
-*         MVC   WKREC+57(9),IDL_TIME_PROCESSED
+         MVC   WKREC+57(9),IDL_TIME_PROCESSED
          LAY   R15,FORMAT_HEX
          CALL (15),(WKREC+68,WKCOUNT),                                 *
                MF=(E,WKPLIST)              format csect size
@@ -776,14 +776,8 @@ IDL_ENTRY_LOOP EQU *
          L     R1,WKEXIDCB
          PUT   (1),(0)                     Print GD message
 *
-         BCTR  R5,0                        One less
          A     R3,IDLH_ENTRY_LENG        ->Next entry
-         L     R0,IDLH_BUFFER_LENG
-         AR    R0,R2                     ->End of buffer
-         CR    R3,R0                       Past end of buffer
-         JNL   GI_IDL_010                  - Exit loop
-         LTR   R5,R5                       More to go
-         JP    IDL_ENTRY_LOOP              - Loop back
+         BRCT R5,IDL_ENTRY_LOOP            Loop back
 *
 GI_IDL_010 EQU *
          MVC   WKREC,SPACEX
