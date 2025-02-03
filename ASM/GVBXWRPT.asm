@@ -680,9 +680,9 @@ GB_OK    EQU   *
          MVI   WKREC+62,C':'
          MVC   WKREC+63(2),IDB_TIME_BOUND+4
          L     R1,IDB_MODULE_SIZE
-         LA    R1,3
-         SLL   R1,2
+         LA    R1,3(,R1)
          SRL   R1,2
+         SLL   R1,2
          ST    R1,IDB_MODULE_SIZE
          LAY   R15,FORMAT_HEX
          CALL (15),(WKREC+68,IDB_MODULE_SIZE),                         *
