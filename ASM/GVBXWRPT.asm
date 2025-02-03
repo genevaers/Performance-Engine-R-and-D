@@ -25,8 +25,8 @@
 *                                                                     *
 *  MODULE DESCRIPTION:                                                *
 *                                                                     *
-*      - THIS IS A WRITE EXIT THAT GATHERS INFORMATION ABOUT ALL THE  *
-*        EXITS LOADED INTO A GENEVAERS PASS AND REPORTS THEIR:        *
+*      - THIS IS A WRITE EXIT THAT GATHERS INFORMATION ABOUT EACH     *
+*        EXIT LOADED INTO A GENEVAERS PASS AND REPORTS THEIR:         *
 *                                                                     *
 *        1) LINKAGE EDITOR (BINDER) IDENTIFICATION DATE/TIME          *
 *        2) LOAD MODULE SIZE                                          *
@@ -680,9 +680,9 @@ GB_OK    EQU   *
          MVI   WKREC+62,C':'
          MVC   WKREC+63(2),IDB_TIME_BOUND+4
          L     R1,IDB_MODULE_SIZE
-         LA    R1,3(,R1)
-         SRL   R1,2
-         SLL   R1,2
+         LA    R1,3(,R1)                   Do this because ISPF 3.4
+         SRL   R1,2                        does it when displaying
+         SLL   R1,2                        module size
          ST    R1,IDB_MODULE_SIZE
          LAY   R15,FORMAT_HEX
          CALL (15),(WKREC+68,IDB_MODULE_SIZE),                         *
