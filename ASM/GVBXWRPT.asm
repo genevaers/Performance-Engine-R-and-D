@@ -729,6 +729,8 @@ GB_002   EQU   *
 * Process GI - get B_IDRL (csect) data                                *
 ***********************************************************************
 *
+         wto 'gi loop'
+*
 IEWBIDL_BASE EQU R2                      Base register for BIDB buffer
 IDL_BASE     EQU R3                      Base register for BIDB entry
          IEWBUFF FUNC=GETBUF,TYPE=IDRL   Get memory for BIDB buffer
@@ -785,11 +787,17 @@ IDL_ENTRY_LOOP EQU *
          L     R1,WKEXIDCB
          PUT   (1),(0)                     Print GI message
 *
+         wto 'gi count iteration'
+*
          A     R3,IDLH_ENTRY_LENG        ->Next entry
          BRCT R5,IDL_ENTRY_LOOP            Loop back
 *
+         wto 'gi loop iteration'
+*
          CLC   WKRSNC,=XL4'10800001'       If more entries
          JE    GI_LOOP                     then
+*
+         wto 'gi loop end'
 *
 GI_IDL_010 EQU *
          MVC   WKREC,SPACEX
@@ -824,6 +832,7 @@ GI_001   EQU   *
          PUT   (1),(0)
 GI_002   EQU   *
 *
+         wto 'gi end'
 *
 GI_090   EQU   *
          L     R13,RSABP(,R13)    OLD   SAVE AREA
