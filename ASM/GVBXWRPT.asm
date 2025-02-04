@@ -102,8 +102,9 @@ WKAREA   DSECT
 WKSVA    DS  18F                  REGISTER   SAVE AREA
 WKSVA2   DS  18F                  REGISTER   SAVE AREA
 WKSVA3   DS  18F                  REGISTER   SAVE AREA
-WKRETC   DS    F
-WKRSNC   DS    F
+WKRC     DS    F                  Program return code
+WKRETC   DS    F                  API return code
+WKRSNC   DS    F                      reason code  
 WKEXIDCB DS    A
 WKLIBDCB DS    A
 WKIEWBF  DS    A
@@ -282,7 +283,7 @@ MAINLINE EQU   *
          OPEN  ((R2),INPUT),MODE=31,MF=(E,WKRENTWK)
          TM    48(R2),X'10'
          JO    A0040
-         MVC   WKRETC,=F'12'
+         MVC   WKRC,=F'12'
          J     A0900
 A0040    EQU    *
          DROP  R2 IHADCB
@@ -303,7 +304,7 @@ A0040    EQU    *
          OPEN  ((R2),OUTPUT),MODE=31,MF=(E,WKRENTWK)
          TM    48(R2),X'10'
          JO    A0042
-         MVC   WKRETC,=F'12'
+         MVC   WKRC,=F'12'
          J     A0900
 A0042    EQU    *
          DROP  R2 IHADCB
@@ -336,7 +337,7 @@ A0042    EQU    *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-         MVC   WKRETC,=F'4'
+         MVC   WKRC,=F'4'
          J     A0890
 *
 RPTLOOP  EQU   *
@@ -356,7 +357,7 @@ RPTLOOP  EQU   *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-         MVC   WKRETC,=F'16'
+         MVC   WKRC,=F'16'
          J     A0890
 *
 RPT030   EQU   *
@@ -446,19 +447,22 @@ A0900    EQU   *
          L     R1,WKLIBDCB
          FREEMAIN RU,LV=(0),A=(1)
 *
+         L     R3,WKRC            Program return code
+         LHI   R0,WKLENGTH+8
+         LR    R1,R12
+         AHI   R1,-8
+         STORAGE RELEASE,ADDR=(1),LENGTH=(0)
+*
 A0990    EQU   *
-         LHI   R15,0              SET  RETURN CODE
+         LR    R15,R3              SET  RETURN CODE
          J     RETURN
 *
 ***********************************************************************
 *  RETURN TO CALLER (GVBMR95)                                         *
 ***********************************************************************
-RETURN0  EQU   *                                                       
-         XGR   R15,R15            ZERO RETURN CODE                     
-         J     RETURN                                                  
-*                                                                      
-RETURN8  EQU   *                                                       
-         LHI   R15,8              ZERO RETURN CODE                     
+RETURN0  EQU   *
+         XGR   R15,R15            ZERO RETURN CODE
+         J     RETURN
 *                                                                      
 RETURN   EQU   *                                                       
          L     R14,GPRTNCA        LOAD RETURN CODE  ADDRESS            
@@ -613,8 +617,8 @@ SB_001   EQU   *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-         MVC   WKRETC,=F'8'
-         J     GI_090
+         MVC   WKRC,=F'8'
+         J     GI_090                         end of routine
 *
 SB_002   EQU   *
 ***********************************************************************
@@ -638,6 +642,7 @@ GB_LOOP  EQU   *
          JE    GB_OK                         (more data)
          CLC   WKRSNC,=XL4'10800002'       or RSNCODE='10800002'X
          JE    GB_OK                         (no more data)
+*
 GB_BADRC EQU   *                           Other codes are invalid
          MVC   WKREC,SPACEX
          MVC   WKREC(L'MSG_RC),MSG_RC      Build RC message
@@ -651,13 +656,10 @@ GB_BADRC EQU   *                           Other codes are invalid
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-         MVC   WKRETC,=F'8'
+         MVC   WKRC,=F'8'
          J     FREE_BIDB                   Free buffer and
 *                                          read the next command
 GB_OK    EQU   *
-         CLC   WKRSNC,=XL4'10800001'
-         JE    GB_LOOP                     If there are more entries
-*                                          call fast data again
          MVC   WKREC,SPACEX
          MVC   WKREC(L'MSG_RC),MSG_GB      Build GB message
          MVC   WKREC+00(8),WKPGMNM
@@ -684,8 +686,11 @@ GB_OK    EQU   *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-FREE_BIDB EQU  *                                                         
-         IEWBUFF FUNC=FREEBUF,TYPE=IDRB    Free IDT buffer.              
+*
+         CLC   WKRSNC,=XL4'10800001'       Call fast data again
+         JE    GB_LOOP                     If there are more entries
+FREE_BIDB EQU  *
+         IEWBUFF FUNC=FREEBUF,TYPE=IDRB    Free IDT buffer
 *
 *   Call RC
          L     R15,WKIEWBF
@@ -709,7 +714,8 @@ GB_001   EQU   *
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-         MVC   WKRETC,=F'8'
+         MVC   WKRC,=F'8'
+         J     GI_090                         end of routine
 *
 GB_002   EQU   *
 ***********************************************************************
@@ -775,14 +781,14 @@ IDL_ENTRY_LOOP EQU *
          A     R3,IDLH_ENTRY_LENG        ->Next entry
          BRCT R5,IDL_ENTRY_LOOP            Loop back
 *
+         CLC   WKRSNC,=XL4'10800001'       If more entries
+         JE    GI_LOOP                     then
+*
 GI_IDL_010 EQU *
          MVC   WKREC,SPACEX
          LA    R0,WKREC
          L     R1,WKEXIDCB
          PUT   (1),(0)
-*
-         CLC   WKRSNC,=XL4'10800001'       If more entries
-         JE    GI_LOOP                     then
 *
 FREE_BIDL EQU  *
          IEWBUFF FUNC=FREEBUF,TYPE=IDRL    Free IDRL buffer
