@@ -448,10 +448,6 @@ A0900    EQU   *
          FREEMAIN RU,LV=(0),A=(1)
 *
          L     R3,WKRC            Program return code
-         LHI   R0,WKLENGTH+8
-         LR    R1,R12
-         AHI   R1,-8
-*         STORAGE RELEASE,ADDR=(1),LENGTH=(0)
 *
 A0990    EQU   *
          LR    R15,R3              SET  RETURN CODE
@@ -463,18 +459,23 @@ A0990    EQU   *
 RETURN0  EQU   *
          XGR   R15,R15            ZERO RETURN CODE
          J     RETURN
-*                                                                      
-RETURN   EQU   *                                                       
-         L     R14,GPRTNCA        LOAD RETURN CODE  ADDRESS            
-         ST    R15,0(,R14)                                             
-         L     R13,RSABP(,R13)    RESTORE REGISTER  R13                
-*                                                                      
-RETURNIN EQU   *                  RETURN INITIALIZATION                
-         L     R14,RSA14(,R13)    RESTORE REGISTER  R14                
-         LM    R0,R12,RSA0(R13)   RESTORE REGISTERS R0 - R12           
-         BSM   0,R14              RETURN                               
-*                                                                      
-         DROP  R8                                                      
+*
+RETURN   EQU   *
+         L     R14,GPRTNCA        LOAD RETURN CODE  ADDRESS
+         ST    R15,0(,R14)
+         L     R13,RSABP(,R13)    RESTORE REGISTER  R13
+*
+         LHI   R0,WKLENGTH+8
+         LR    R1,R12
+         AHI   R1,-8
+         STORAGE RELEASE,ADDR=(1),LENGTH=(0)
+*
+RETURNIN EQU   *                  RETURN INITIALIZATION
+         L     R14,RSA14(,R13)    RESTORE REGISTER  R14
+         LM    R0,R12,RSA0(R13)   RESTORE REGISTERS R0 - R12
+         BSM   0,R14              RETURN
+*
+         DROP  R8
 *
 *
 ***********************************************************************
@@ -630,8 +631,6 @@ IDB_BASE     EQU R3                      Base register for BIDB entry
          IEWBUFF FUNC=INITBUF,TYPE=IDRB  Init IDB buffer
          XC    WKCURSOR,WKCURSOR         Zero out cursor
 *
-         wto 'gb loop'
-*
 GB_LOOP  EQU   *
          L     R15,WKIEWBF
          CALL (15),(GD,WKMTOKEN,B_BIDB_VSTRING,0,(IEWBIDB_BASE),       *
@@ -690,12 +689,9 @@ GB_OK    EQU   *
          L     R1,WKEXIDCB
          PUT   (1),(0)
 *
-         wto 'gb loop iteration'
-*
          CLC   WKRSNC,=XL4'10800001'       Call fast data again
          JE    GB_LOOP                     If there are more entries
 FREE_BIDB EQU  *
-         wto 'gb loop end'
          IEWBUFF FUNC=FREEBUF,TYPE=IDRB    Free IDT buffer
 *
 *   Call RC
@@ -724,13 +720,9 @@ GB_001   EQU   *
          J     GI_090                         end of routine
 *
 GB_002   EQU   *
-         wto 'gb end'
 ***********************************************************************
 * Process GI - get B_IDRL (csect) data                                *
 ***********************************************************************
-*
-         wto 'gi loop'
-*
 IEWBIDL_BASE EQU R2                      Base register for BIDB buffer
 IDL_BASE     EQU R3                      Base register for BIDB entry
          IEWBUFF FUNC=GETBUF,TYPE=IDRL   Get memory for BIDB buffer
@@ -787,17 +779,11 @@ IDL_ENTRY_LOOP EQU *
          L     R1,WKEXIDCB
          PUT   (1),(0)                     Print GI message
 *
-         wto 'gi count iteration'
-*
          A     R3,IDLH_ENTRY_LENG        ->Next entry
          BRCT R5,IDL_ENTRY_LOOP            Loop back
 *
-         wto 'gi loop iteration'
-*
          CLC   WKRSNC,=XL4'10800001'       If more entries
          JE    GI_LOOP                     then
-*
-         wto 'gi loop end'
 *
 GI_IDL_010 EQU *
          MVC   WKREC,SPACEX
@@ -831,8 +817,6 @@ GI_001   EQU   *
          L     R1,WKEXIDCB
          PUT   (1),(0)
 GI_002   EQU   *
-*
-         wto 'gi end'
 *
 GI_090   EQU   *
          L     R13,RSABP(,R13)    OLD   SAVE AREA
