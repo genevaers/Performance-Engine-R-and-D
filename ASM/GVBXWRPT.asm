@@ -63,32 +63,22 @@
 *                                                                     *
 *        R15 - TEMPORARY WORK    REGISTER                             *
 *            - RETURN    CODE                                         *
-*                                                                     *
 *        R14 - TEMPORARY WORK    REGISTER                             *
 *            - RETURN    ADDR                                         *
-*                                                                     *
-*        R13 - WORK AREA ADDRESS                                      *
-*                                                                     *
-*        R12 - PROGRAM    BASE   REGISTER                             *
+*        R13 - Current save area                                      *
+*        R12 - WORK AREA ADDRESS                                      *
 *        R11 - PROGRAM    BASE   REGISTER                             *
-*                                                                     *
-*        R10 - SUBROUTINE CALL   RETURN   ADDRESS (1ST LEVEL)         *
-*                                                                     *
-*        R9  - WORK AREA  ANCHOR ADDRESS                              *
-*                                                                     *
-*        R8  - PARAMETER  LIST   ADDRESS                              *
-*                                                                     *
-*        R7  - EVENT FILE AREA   ADDRESS                              *
+*        R10 -                                                        *
+*        R9  -                                                        *
+*        R8  - GENPARM ADDRESS                                        *
+*        R7  - GENENV ADDRESS                                         *
 *        R6  -                                                        *
-*        R5  - GENERATED TRANSACTION RECORD ADDRESS                   *
-*                                                                     *
+*        R5  -                                                        *
 *        R4  -                                                        *
 *        R3  -                                                        *
 *        R2  -                                                        *
-*                                                                     *
 *        R1  - TEMPORARY WORK    REGISTER                             *
 *            - PARAMETER LIST    ADDRESS             (UPON ENTRY)     *
-*                                                                     *
 *        R0  - TEMPORARY WORK    REGISTER                             *
 *                                                                     *
 ***********************************************************************
@@ -98,6 +88,8 @@
          Copy GVBASSRT
          COPY GVBMR95W
          COPY GVBMR95L
+*
+         SYSSTATE ARCHLVL=2,AMODE64=NO
 *
 ***********************************************************************
 *                                                                     *
@@ -166,15 +158,15 @@ RSA2     EQU   28
 GVBXWRPT RMODE ANY
 GVBXWRPT AMODE 31
 GVBXWRPT CSECT
-         J     CODE
+         J     START
 XWRPTEYE GVBEYE GVBXWRPT
+static   loctr                    define the static section
+code     loctr                    and the code
 *
-CODE     STM   R14,R12,RSA14(R13) SAVE  CALLER'S  REGISTERS
+START    STM   R14,R12,RSA14(R13) SAVE  CALLER'S  REGISTERS
 *
-         LA    R10,0(,R15)        SET   PROGRAM   BASE    REGISTER
-         LA    R11,4095(,R10)     SET   PROGRAM   BASE    REGISTER
-         LA    R11,1(,R11)
-         USING GVBXWRPT,R10,R11 --------------------------------------- 
+         LA    R11,0(,R15)        SET   PROGRAM   BASE    REGISTER
+         USING GVBXWRPT,R11     -------------------------------------- 
 *                                                                      
          LR    R8,R1              LOAD  PARAMETER LIST    ADDRESS      
          USING GENPARM,R8       -------------------------------------- 
@@ -480,6 +472,7 @@ RETURNIN EQU   *                  RETURN INITIALIZATION
 *                                                                      
          DROP  R8                                                      
 *
+*
 ***********************************************************************
 *  EXITLST: GET LIST FOR REPORT OF GENERAERS EXTRACT PHASE USER EXITS *
 *           AND SORT LIST OF EXITS, LEAVING DUPLICATES IN LIST.       *
@@ -575,6 +568,7 @@ BUBBLEX  EQU   *
          L     R13,RSABP(,R13)    OLD   SAVE AREA                       
          LM    R14,R12,12(R13)                                          
          BR    R14                                                      
+*
 *
 ***********************************************************************
 *  EXITRPT: REPORT OF GENERAERS EXTRACT PHASE USER EXITS FROM LIST    *
@@ -823,13 +817,15 @@ GI_090   EQU   *
          LM    R14,R12,12(R13)
          BR    R14
 *
-*********************************************************************** 
+***********************************************************************
+static   loctr , 
 MVCR5R14 MVC   0(0,R5),0(R14)     * * * * E X E C U T E D * * * *
 GI_MVC   MVC   WKREC+0(0),0(R15)           MVC template
 *
 ***********************************************************************
 * Format hex value                                                    *
-*********************************************************************** 
+***********************************************************************
+code     loctr , 
 FORMAT_HEX DS 0H                                                       
          STM   R14,R12,12(R13)    Save registers
 *
@@ -844,7 +840,8 @@ FORMAT_HEX DS 0H
 *                                                                     * 
 *        C O N S T A N T S                                            * 
 *                                                                     * 
-*********************************************************************** 
+***********************************************************************
+static   loctr , 
          DS   0D                                                        
 MODE31   DS   0XL4                                                      
 OPENPARM DC    XL8'8000000000000000'
