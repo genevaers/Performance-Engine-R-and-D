@@ -872,12 +872,12 @@ NTYPE_CLASSES         DC C'C'
 ***********************************************************************
 * Fast data mappings and buffer templates                             *
 ***********************************************************************
-ESDBUF   IEWBUFF FUNC=MAPBUF,TYPE=ESD,VERSION=6,SIZE=8                 
-CUIBUF   IEWBUFF FUNC=MAPBUF,TYPE=CUI,VERSION=6,BYTES=40960            
-NAMBUF   IEWBUFF FUNC=MAPBUF,TYPE=NAME,VERSION=6,SIZE=8                
-TXTBUF   IEWBUFF FUNC=MAPBUF,TYPE=TEXT,VERSION=6,BYTES=2048            
-IDRBUF   IEWBUFF FUNC=MAPBUF,TYPE=IDRB,VERSION=6,BYTES=4072            
-IDLBUF   IEWBUFF FUNC=MAPBUF,TYPE=IDRL,VERSION=7,BYTES=40960           
+ESDBUF   IEWBUFF FUNC=MAPBUF,TYPE=ESD,VERSION=7,SIZE=8                 
+CUIBUF   IEWBUFF FUNC=MAPBUF,TYPE=CUI,VERSION=7,BYTES=40896            
+NAMBUF   IEWBUFF FUNC=MAPBUF,TYPE=NAME,VERSION=7,SIZE=8                
+TXTBUF   IEWBUFF FUNC=MAPBUF,TYPE=TEXT,VERSION=7,BYTES=2048            
+IDRBUF   IEWBUFF FUNC=MAPBUF,TYPE=IDRB,VERSION=7,BYTES=4072            
+IDLBUF   IEWBUFF FUNC=MAPBUF,TYPE=IDRL,VERSION=7,BYTES=40944           
 ***********************************************************************
 * Hexadecimal characters                                              *
 ***********************************************************************
