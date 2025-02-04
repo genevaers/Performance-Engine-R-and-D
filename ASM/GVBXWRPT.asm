@@ -451,7 +451,7 @@ A0900    EQU   *
          LHI   R0,WKLENGTH+8
          LR    R1,R12
          AHI   R1,-8
-         STORAGE RELEASE,ADDR=(1),LENGTH=(0)
+*         STORAGE RELEASE,ADDR=(1),LENGTH=(0)
 *
 A0990    EQU   *
          LR    R15,R3              SET  RETURN CODE
