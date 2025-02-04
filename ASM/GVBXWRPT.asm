@@ -205,7 +205,7 @@ OPRDCLTE EQU   *                  OP/RD/CL/TE
 WORKALLO EQU   *                                                       
          LHI   R0,WKLENGTH+8       LOAD  WORK AREA SIZE                
 *                                                                      
-         STORAGE OBTAIN,LENGTH=(0),COND=NO,CHECKZERO=YES               
+         STORAGE OBTAIN,LENGTH=(0),COND=NO,CHECKZERO=YES,LOC=ANY
 *                                                                      
          MVC   0(8,R1),WORKEYEB                                        
          LA    R12,8(,R1)                                              
@@ -464,11 +464,6 @@ RETURN   EQU   *
          L     R14,GPRTNCA        LOAD RETURN CODE  ADDRESS
          ST    R15,0(,R14)
          L     R13,RSABP(,R13)    RESTORE REGISTER  R13
-*
-         LHI   R0,WKLENGTH+8
-         LR    R1,R12
-         AHI   R1,-8
-         STORAGE RELEASE,ADDR=(1),LENGTH=(0)
 *
 RETURNIN EQU   *                  RETURN INITIALIZATION
          L     R14,RSA14(,R13)    RESTORE REGISTER  R14
