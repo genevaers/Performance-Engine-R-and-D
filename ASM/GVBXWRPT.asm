@@ -629,6 +629,9 @@ IDB_BASE     EQU R3                      Base register for BIDB entry
          IEWBUFF FUNC=GETBUF,TYPE=IDRB   Get memory for BIDB buffer
          IEWBUFF FUNC=INITBUF,TYPE=IDRB  Init IDB buffer
          XC    WKCURSOR,WKCURSOR         Zero out cursor
+*
+         wto 'gb loop'
+*
 GB_LOOP  EQU   *
          L     R15,WKIEWBF
          CALL (15),(GD,WKMTOKEN,B_BIDB_VSTRING,0,(IEWBIDB_BASE),       *
@@ -687,9 +690,12 @@ GB_OK    EQU   *
          L     R1,WKEXIDCB
          PUT   (1),(0)
 *
+         wto 'gb loop iteration'
+*
          CLC   WKRSNC,=XL4'10800001'       Call fast data again
          JE    GB_LOOP                     If there are more entries
 FREE_BIDB EQU  *
+         wto 'gb loop end'
          IEWBUFF FUNC=FREEBUF,TYPE=IDRB    Free IDT buffer
 *
 *   Call RC
@@ -718,6 +724,7 @@ GB_001   EQU   *
          J     GI_090                         end of routine
 *
 GB_002   EQU   *
+         wto 'gb end'
 ***********************************************************************
 * Process GI - get B_IDRL (csect) data                                *
 ***********************************************************************
